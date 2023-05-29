@@ -1,100 +1,151 @@
 use std::collections::VecDeque;
+use std::sync::mpsc::RecvError;
 use std::thread;
 use std::time::{Duration, Instant};
+use bus::BusReader;
 use dotenv::dotenv;
 use iota_wallet::iota_client::block::{Block, BlockId};
 use iota_wallet::iota_client::Client;
 use iota_wallet::iota_client::crypto::ciphers::aes_kw::BLOCK;
 use json::JsonValue;
 use serde_json::{json, Value};
+use crate::hornet_adapter;
 
-struct Hornet {
-    node: Client,
-    messages: VecDeque<IRC27>,
-    timestamp: Instant
-}
-
-impl Default for Hornet{
-    fn default() -> Self {
-        dotenv().expect(".env file not found");
-        let node_url = hornet::connect_to_node(std::env::var("NODE_URL").unwrap());
-            
-        Hornet{
-            node: connect_to_node(node_url),
-            messages: VecDeque::new(),
-            timestamp: Instant::now()
-        }
-    }
+pub struct Hornet {
+    pub node: Client,
+    pub messages: Vec<IRC27>,
+    pub bus_reader: BusReader<JsonValue>,
 }
 
 impl Hornet {
-    pub fn attach(mut self, data: String){
-        let irc27 = generate_irc27_from_json(json::parse(data.as_str()).unwrap());
-        self.messages.push(irc27);
-        let elapsed = self.timestamp.elapsed();
-        if elapsed >= Duration::from_secs(10) {
-            self.timestamp == Instant::now();
-            //TODO Attach block
-            //TODO If "market" block then do not delete timestamp. Market block should be treated differently
+    pub fn attach(&mut self, json: JsonValue) {
+        let open_bracket = "[".as_bytes();
+        let close_bracket = "]".as_bytes();
+        let comma = ",".as_bytes();
 
-            thread::spawn(move ||async move{
-                let mut data : Vec<u8> = vec![];
+        let irc27 = generate_irc27_from_json(json);
 
-                while self.messages.len() > 0 && data.len() + self.messages.get(0).unwrap() + data.len() < Block::LENGTH_MAX{
-                    let byte_array = self.messages.pop_front().unwrap().get_json().as_str().unwrap().as_bytes();
-                    for byte in byte_array {
-                        data.push(byte.clone())
-                    }
-                    index = index + 1;
-                }
+        let mut byte_length = open_bracket.len() + close_bracket.len() + comma.len();
 
-                if self.messages.len() > 0 && self.messages.get(0).unwrap().get_json().as_str().unwrap().as_bytes().len() > Block::LENGTH_MAX{
-                    let date = self.messages.get(0).unwrap().get_json().as_str().unwrap().as_bytes();
-                    let chunks = data.chunks(Block::LENGTH_MAX - 1);
-                    for chunk in chunks {
-                        let result = self.node.block()
-                            .with_tag("EDCAS".as_bytes().to_vec())
-                            .with_data(Vec::from(chunk))
-                            .finish().await;
+        for message in &self.messages {
+            byte_length = byte_length + message.get_json().to_string().as_bytes().len();
+        }
 
+        byte_length = byte_length + irc27.get_json().to_string().as_bytes().len();
 
-                        match result {
-                            Ok(block) => {
-                                println!("Block chunk send: {}", block.id())
-                            }
-                            Err(err) => {
-                                println!("Couldn't send block chunk: {:?}", err)
-                            }
+        //If new byte length is larger then current, send current messages into the tangle
+        if byte_length > Block::LENGTH_MAX - 100 {
+            let mut messages = self.messages.clone();
+            self.messages = Vec::new();
+            let node = self.node.clone();
+
+            //If current message fits into block (no big market data)
+            if irc27.get_json().to_string().as_bytes().len() < Block::LENGTH_MAX - 100 {
+                thread::spawn(move || {
+                    let mut data: Vec<u8> = vec![];
+
+                    open_bracket.iter().for_each(|byte| {
+                        data.push(byte.clone());
+                    });
+                    let mut json_string = messages.get(0).unwrap().get_json().to_string();
+                    let mut json_bytes = json_string.as_bytes();
+                    let mut is_first = true;
+
+                    while messages.len() > 0 && data.len() + json_bytes.len() + ",".as_bytes().len() + "]".as_bytes().len() < Block::LENGTH_MAX - 100 {
+                        if !is_first {
+                            comma.iter().for_each(|byte| {
+                                data.push(byte.clone());
+                            });
+                        } else {
+                            is_first = false;
+                        }
+                        let popped_json_string = messages.pop().unwrap().get_json().to_string();
+                        let byte_array = popped_json_string.as_bytes();
+                        for byte in byte_array {
+                            data.push(byte.clone())
                         }
                     }
+
+                    close_bracket.iter().for_each(|byte| {
+                        data.push(byte.clone());
+                    });
+
+                    let thread_data = data.clone();
+                    let thread_node = node.clone();
+                    tokio::runtime::Builder::new_current_thread()
+                        .enable_all()
+                        .build()
+                        .unwrap()
+                        .block_on(async move {
+                            let result = thread_node.block()
+                                .with_tag("EDCAS".as_bytes().to_vec())
+                                .with_data(thread_data)
+                                .finish().await;
+
+
+                            match result {
+                                Ok(block) => {
+                                    println!("Block send: {}", block.id())
+                                }
+                                Err(err) => {
+                                    println!("Couldn't send block chunk: {:?}", err)
+                                }
+                            }
+                        });
+                });
+            } else {
+                let json_string = messages.get(0).unwrap().get_json().to_string();
+                let json_bytes = json_string.as_bytes();
+
+                let chunks = json_bytes.chunks(Block::LENGTH_MAX - 100);
+                for chunk in chunks {
+                    let thread_node_blocks = node.clone();
+                    tokio::runtime::Builder::new_current_thread()
+                        .enable_all()
+                        .build()
+                        .unwrap()
+                        .block_on(async move {
+                            let result = thread_node_blocks.block()
+                                .with_tag("EDCAS Market".as_bytes().to_vec())
+                                .with_data(Vec::from(chunk))
+                                .finish().await;
+
+
+                            match result {
+                                Ok(block) => {
+                                    println!("Block market send: {}", block.id())
+                                }
+                                Err(err) => {
+                                    println!("Couldn't send block market: {:?}", err)
+                                }
+                            }
+                        });
                 }
-
-                let result = self.node.block()
-                    .with_tag("EDCAS".as_bytes().to_vec())
-                    .with_data(data)
-                    .finish().await;
-
-
-                match result {
-                    Ok(block) => {
-                        println!("Block send: {}", block.id())
-                    }
-                    Err(err) => {
-                        println!("Couldn't send block: {:?}", err)
-                    }
-                }
-            });
+            }
+        }
+        self.messages.push(irc27);
+    }
+    pub fn read(&mut self) {
+        let json_result = self.bus_reader.recv();
+        match json_result {
+            Ok(json) => {
+                self.attach(json);
+                println!("Queue size: {}",  self.messages.len());
+            }
+            Err(err) => {
+                println!("Rec. error: {}", err);
+            }
         }
     }
 }
 
-pub fn connect_to_node(url : String) -> Client {
+pub fn connect_to_node(url: String) -> Client {
     Client::builder()
         .with_node(url.as_str()).expect("Unable to connect to node")
         .finish().unwrap()
 }
 
-pub async fn send_data_in_blocks(node : &Client, data : &Vec<u8>,tag : String){
+pub async fn send_data_in_blocks(node: &Client, data: &Vec<u8>, tag: String) {
     match node.block()
         .with_data(data.to_vec())
         .with_tag(tag.as_bytes().to_vec())
@@ -108,42 +159,42 @@ pub async fn send_data_in_blocks(node : &Client, data : &Vec<u8>,tag : String){
                     let local_node = node.clone();
                     let local_data = data.to_vec().clone();
                     let block_id = block.id().clone();
-                    thread::spawn(move ||async move{
-                        println!("{}",String::from_utf8(local_data).unwrap_or_default());
-                        println!("{:?}",err);
+                    thread::spawn(move || async move {
+                        println!("{}", String::from_utf8(local_data).unwrap_or_default());
+                        println!("{:?}", err);
                         let _ = local_node.retry_until_included(&block_id, None, None).await;
                     });
                 }
             }
-        },
+        }
         Err(_) => {
-            send_data_in_block_group(&node, &data,tag).await;
+            send_data_in_block_group(&node, &data, tag).await;
         }
     }
 }
 
-pub async fn send_data_in_block_group(node : &Client, data : &Vec<u8>,tag : String) -> Option<Block>{
+pub async fn send_data_in_block_group(node: &Client, data: &Vec<u8>, tag: String) -> Option<Block> {
     let chunks = data.chunks(Block::LENGTH_MAX);
     let chunks_len = chunks.len();
 
     let mut block_vector: Vec<BlockId> = Vec::new();
 
-    for chunk in chunks{
+    for chunk in chunks {
         let block_result = node.block()
             .with_tag(tag.as_bytes().to_vec())
             .with_data(chunk.to_vec())
             .finish().await;
         match block_result {
-            Ok(block) => {block_vector.push(block.id());}
-            Err(err) => {println!("Error send_data_in_block_group for loop: {:?}", err);}
+            Ok(block) => { block_vector.push(block.id()); }
+            Err(err) => { println!("Error send_data_in_block_group for loop: {:?}", err); }
         }
     }
 
     // 8 Is the maximum number of parents
     if block_vector.len() > 8 {
         println!("Too many parents: {}", block_vector.len());
-        println!("Byte size: {}", data.len() );
-        return None
+        println!("Byte size: {}", data.len());
+        return None;
     }
 
     //Creating block with the data chunks included and some additional information
@@ -172,18 +223,18 @@ pub async fn send_data_in_block_group(node : &Client, data : &Vec<u8>,tag : Stri
             let block_result = parents.finish().await;
 
             return match block_result {
-                Ok(block) => {Some(block)}
-                Err(_) => {None}
-            }
+                Ok(block) => { Some(block) }
+                Err(_) => { None }
+            };
         }
-        Err(_) => {None}
-    }
-
+        Err(_) => { None }
+    };
 }
 
 
 // https://docs.opensea.io/docs/metadata-standards
-struct IRC27 {
+#[derive(Clone)]
+pub struct IRC27 {
     standard: String,
     version: String,
     description: String,
@@ -194,7 +245,8 @@ struct IRC27 {
     attributes: Vec<Attribute>,
 }
 
-struct Attribute {
+#[derive(Clone)]
+pub struct Attribute {
     trait_type: String,
     value: String,
 }
@@ -239,7 +291,8 @@ impl Attribute {
 
 fn generate_irc27_from_json(json: JsonValue) -> IRC27 {
     let mut attributes: Vec<Attribute> = vec![];
-    for entry in json.entries() {
+    let json_message = json["message"].clone();
+    for entry in json_message.entries() {
         attributes.push(
             Attribute {
                 trait_type: entry.0.to_string(),
