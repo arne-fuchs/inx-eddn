@@ -20,10 +20,9 @@ mod eddn_adapter;
 fn main(){
     dotenv().expect(".env file not found");
 
-    let mut hornet_bus: Bus<JsonValue> = Bus::new(100);
+    let mut hornet_bus: Bus<JsonValue> = Bus::new(10000);
     let bus_reader = hornet_bus.add_rx();
 
-    let node = hornet_adapter::connect_to_node(std::env::var("NODE_URL").unwrap());
     println!("Loading wallet");
 
     let client_options = ClientOptions::new()
@@ -50,7 +49,7 @@ fn main(){
 
                     // Set the stronghold password
                     manager
-                        .set_stronghold_password("mecaBl1tz45CL-4")
+                        .set_stronghold_password(std::env::var("WALLET_PASSWORD").unwrap().as_str())
                         .await.unwrap();
 
                     // Get the account we generated with `01_create_wallet`
@@ -76,7 +75,7 @@ fn main(){
                 .block_on(async {
                     // Setup Stronghold secret_manager
                     let mut secret_manager = StrongholdSecretManager::builder()
-                        .password("mecaBl1tz45CL-4")
+                        .password(std::env::var("WALLET_PASSWORD").unwrap().as_str())
                         .build(PathBuf::from("wallet.stronghold")).unwrap();
 
                     // Only required the first time, can also be generated with `manager.generate_mnemonic()?`
@@ -117,7 +116,6 @@ fn main(){
         .expect("Failed creating addresses")
         .block_on(async {
             let address = account.addresses().await.unwrap()[0].address().to_bech32();
-            println!("{}", &address);
             println!("Address: {}",&address);
             return address;
         });
@@ -133,7 +131,7 @@ fn main(){
     println!("Bech32: {}",&bech32_hrp);
     println!("Done loading wallet!");
     let mut hornet = Hornet {
-        node,
+        node: account.client().clone(),
         account,
         messages: Vec::new(),
         bus_reader,

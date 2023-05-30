@@ -22,6 +22,7 @@ pub struct Hornet {
 
 impl Hornet {
     pub fn attach(&mut self, json: JsonValue) {
+        let epsilon = 10;
         let open_bracket = "[".as_bytes();
         let close_bracket = "]".as_bytes();
         let comma = ",".as_bytes();
@@ -37,13 +38,13 @@ impl Hornet {
         byte_length = byte_length + irc27.get_json().to_string().as_bytes().len();
 
         //If new byte length is larger then current, send current messages into the tangle
-        if byte_length > Block::LENGTH_MAX - 100 {
+        if byte_length > Block::LENGTH_MAX - epsilon {
             let mut messages = self.messages.clone();
             self.messages = Vec::new();
             let node = self.node.clone();
 
             //If current message fits into block (no big market data)
-            if irc27.get_json().to_string().as_bytes().len() < Block::LENGTH_MAX - 100 {
+            if irc27.get_json().to_string().as_bytes().len() + open_bracket.len() + close_bracket.len() < Block::LENGTH_MAX - epsilon {
                 thread::spawn(move || {
                     let mut data: Vec<u8> = vec![];
 
@@ -54,7 +55,7 @@ impl Hornet {
                     let mut json_bytes = json_string.as_bytes();
                     let mut is_first = true;
 
-                    while messages.len() > 0 && data.len() + json_bytes.len() + ",".as_bytes().len() + "]".as_bytes().len() < Block::LENGTH_MAX - 100 {
+                    while messages.len() > 0 && data.len() + json_bytes.len() + ",".as_bytes().len() + "]".as_bytes().len() < Block::LENGTH_MAX - epsilon {
                         if !is_first {
                             comma.iter().for_each(|byte| {
                                 data.push(byte.clone());
@@ -67,6 +68,10 @@ impl Hornet {
                         for byte in byte_array {
                             data.push(byte.clone())
                         }
+                    }
+                    assert_eq!(is_first, false);
+                    if is_first {
+                        return;
                     }
 
                     close_bracket.iter().for_each(|byte| {
@@ -83,8 +88,7 @@ impl Hornet {
                             let result = thread_node.block()
                                 .with_tag("EDCAS".as_bytes().to_vec())
                                 .with_data(thread_data)
-                                .with_coin_type(SHIMMER_COIN_TYPE)
-                                .finish_block(None)
+                                .finish()
                                 .await;
 
 
@@ -102,7 +106,7 @@ impl Hornet {
                 let json_string = messages.get(0).unwrap().get_json().to_string();
                 let json_bytes = json_string.as_bytes();
 
-                let chunks = json_bytes.chunks(Block::LENGTH_MAX - 100);
+                let chunks = json_bytes.chunks(Block::LENGTH_MAX - epsilon);
                 for chunk in chunks {
                     let thread_node_blocks = node.clone();
                     tokio::runtime::Builder::new_current_thread()
@@ -113,8 +117,7 @@ impl Hornet {
                             let result = thread_node_blocks.block()
                                 .with_tag("EDCAS Market".as_bytes().to_vec())
                                 .with_data(Vec::from(chunk))
-                                .with_coin_type(SHIMMER_COIN_TYPE)
-                                .finish_block(None)
+                                .finish()
                                 .await;
 
 
@@ -146,11 +149,6 @@ impl Hornet {
     }
 }
 
-pub fn connect_to_node(url: String) -> Client {
-    Client::builder()
-        .with_node(url.as_str()).expect("Unable to connect to node")
-        .finish().unwrap()
-}
 
 // https://docs.opensea.io/docs/metadata-standards
 #[derive(Clone)]
