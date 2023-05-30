@@ -4,8 +4,10 @@ use std::thread;
 use std::time::{Duration, Instant};
 use bus::BusReader;
 use dotenv::dotenv;
+use iota_wallet::account::{Account, AccountHandle};
 use iota_wallet::iota_client::block::{Block, BlockId};
 use iota_wallet::iota_client::Client;
+use iota_wallet::iota_client::constants::SHIMMER_COIN_TYPE;
 use iota_wallet::iota_client::crypto::ciphers::aes_kw::BLOCK;
 use json::JsonValue;
 use serde_json::{json, Value};
@@ -13,6 +15,7 @@ use crate::hornet_adapter;
 
 pub struct Hornet {
     pub node: Client,
+    pub account: AccountHandle,
     pub messages: Vec<IRC27>,
     pub bus_reader: BusReader<JsonValue>,
 }
@@ -80,7 +83,9 @@ impl Hornet {
                             let result = thread_node.block()
                                 .with_tag("EDCAS".as_bytes().to_vec())
                                 .with_data(thread_data)
-                                .finish().await;
+                                .with_coin_type(SHIMMER_COIN_TYPE)
+                                .finish_block(None)
+                                .await;
 
 
                             match result {
@@ -108,7 +113,9 @@ impl Hornet {
                             let result = thread_node_blocks.block()
                                 .with_tag("EDCAS Market".as_bytes().to_vec())
                                 .with_data(Vec::from(chunk))
-                                .finish().await;
+                                .with_coin_type(SHIMMER_COIN_TYPE)
+                                .finish_block(None)
+                                .await;
 
 
                             match result {
@@ -144,93 +151,6 @@ pub fn connect_to_node(url: String) -> Client {
         .with_node(url.as_str()).expect("Unable to connect to node")
         .finish().unwrap()
 }
-
-pub async fn send_data_in_blocks(node: &Client, data: &Vec<u8>, tag: String) {
-    match node.block()
-        .with_data(data.to_vec())
-        .with_tag(tag.as_bytes().to_vec())
-        .finish().await
-    {
-        Ok(block) => {
-            let result = node.post_block(&block).await;
-            match result {
-                Ok(_) => {}
-                Err(err) => {
-                    let local_node = node.clone();
-                    let local_data = data.to_vec().clone();
-                    let block_id = block.id().clone();
-                    thread::spawn(move || async move {
-                        println!("{}", String::from_utf8(local_data).unwrap_or_default());
-                        println!("{:?}", err);
-                        let _ = local_node.retry_until_included(&block_id, None, None).await;
-                    });
-                }
-            }
-        }
-        Err(_) => {
-            send_data_in_block_group(&node, &data, tag).await;
-        }
-    }
-}
-
-pub async fn send_data_in_block_group(node: &Client, data: &Vec<u8>, tag: String) -> Option<Block> {
-    let chunks = data.chunks(Block::LENGTH_MAX);
-    let chunks_len = chunks.len();
-
-    let mut block_vector: Vec<BlockId> = Vec::new();
-
-    for chunk in chunks {
-        let block_result = node.block()
-            .with_tag(tag.as_bytes().to_vec())
-            .with_data(chunk.to_vec())
-            .finish().await;
-        match block_result {
-            Ok(block) => { block_vector.push(block.id()); }
-            Err(err) => { println!("Error send_data_in_block_group for loop: {:?}", err); }
-        }
-    }
-
-    // 8 Is the maximum number of parents
-    if block_vector.len() > 8 {
-        println!("Too many parents: {}", block_vector.len());
-        println!("Byte size: {}", data.len());
-        return None;
-    }
-
-    //Creating block with the data chunks included and some additional information
-    let mut ids = String::new();
-    ids.push_str("{\"messages\":[");
-    for block_id in &block_vector {
-        ids.push_str("\"");
-        ids.push_str(block_id.to_string().as_str());
-        ids.push_str("\",")
-    }
-    let _ = ids.pop();
-    ids.push_str("],\"totalLength\":");
-    ids.push_str(String::from(data.len().to_string().as_str()).as_str());
-    ids.push_str(",");
-    ids.push_str("\"size\":");
-    ids.push_str(chunks_len.to_string().as_str());
-    ids.push_str("}");
-
-    let parents_result = node.block()
-        .with_tag("DataChunkPack".as_bytes().to_vec())
-        .with_data(ids.into_bytes())
-        .with_parents(block_vector);
-
-    return match parents_result {
-        Ok(parents) => {
-            let block_result = parents.finish().await;
-
-            return match block_result {
-                Ok(block) => { Some(block) }
-                Err(_) => { None }
-            };
-        }
-        Err(_) => { None }
-    };
-}
-
 
 // https://docs.opensea.io/docs/metadata-standards
 #[derive(Clone)]
