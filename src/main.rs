@@ -27,6 +27,7 @@ fn main(){
 
     let client_options = ClientOptions::new()
         .with_local_pow(true)
+        .with_pow_worker_count(std::env::var("NUM_OF_WORKER").unwrap().parse().unwrap())
         .with_node(std::env::var("NODE_URL").unwrap().as_str()).unwrap();
 
     //create stronghold account
@@ -110,7 +111,7 @@ fn main(){
         });
 
     //get address one time so it doesn't have to be created each time
-    let address = tokio::runtime::Builder::new_current_thread()
+    let _ = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
         .expect("Failed creating addresses")

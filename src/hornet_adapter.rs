@@ -25,7 +25,7 @@ pub struct Hornet {
 
 impl Hornet {
     pub fn attach(&mut self, blob: Vec<u8>) {
-        let epsilon = 50;
+        let epsilon = 200;
         let open_bracket = "[".as_bytes();
         let close_bracket = "]".as_bytes();
         let comma = ",".as_bytes();
@@ -46,13 +46,13 @@ impl Hornet {
 
             //If current message fits into block (no big market data)
             if blob.len() + open_bracket.len() + close_bracket.len() < Block::LENGTH_MAX - epsilon {
-                thread::spawn(move || {
+
                     let mut data: Vec<u8> = vec![];
 
                     open_bracket.iter().for_each(|byte| {
                         data.push(byte.clone());
                     });
-                    let mut blob = blobs.get(0).unwrap().clone();
+                    let blob = blobs.get(0).unwrap().clone();
                     let mut is_first = true;
 
                     while blobs.len() > 0 && data.len() + blob.len() + ",".as_bytes().len() + "]".as_bytes().len() < Block::LENGTH_MAX - epsilon {
@@ -76,7 +76,9 @@ impl Hornet {
 
                         let thread_data = data.clone();
                         let thread_node = node.clone();
-                        tokio::runtime::Builder::new_current_thread()
+                        let now = Instant::now();
+                        println!("Attaching block...");
+                        tokio::runtime::Builder::new_multi_thread()
                             .enable_all()
                             .build()
                             .unwrap()
@@ -89,7 +91,8 @@ impl Hornet {
 
                                 match result {
                                     Ok(block) => {
-                                        println!("Block send: {}", block.id())
+                                        println!("Block send: {}", block.id());
+                                        println!("Took {} seconds", now.elapsed().as_secs());
                                     }
                                     Err(err) => {
                                         println!("Couldn't send block chunk: {:?}", err)
@@ -97,14 +100,14 @@ impl Hornet {
                                 }
                             });
                     }
-                });
+
             } else {
                 let blob = blobs.get(0).unwrap();
 
                 let chunks = blob.chunks(Block::LENGTH_MAX - epsilon);
                 for chunk in chunks {
                     let thread_node_blocks = node.clone();
-                    tokio::runtime::Builder::new_current_thread()
+                    tokio::runtime::Builder::new_multi_thread()
                         .enable_all()
                         .build()
                         .unwrap()
