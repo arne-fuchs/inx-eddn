@@ -86,7 +86,7 @@ impl Hornet {
                                         println!("Block send: {}", block.id());
                                         println!("Took {} seconds", now.elapsed().as_secs());
                                         println!("Number of updates included: {}", &blob_index);
-                                        println!("Updates per second: {}", blob_index/now.elapsed().as_secs());
+                                        println!("Updates per second: {}", blob_index as f64/now.elapsed().as_secs()as f64);
                                         println!("------------------------------------------");
                                     }
                                     Err(err) => {

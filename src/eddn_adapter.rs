@@ -8,10 +8,13 @@ use dotenv::dotenv;
 use flate2::Compression;
 use flate2::read::ZlibDecoder;
 use flate2::write::ZlibEncoder;
+use tokio::time::Instant;
 
 pub struct EddnAdapter {
     pub hornet_bus: Bus<Vec<u8>>,
     pub queue: VecDeque<Vec<u8>>,
+    pub timestamp: Instant,
+    pub count: usize,
 }
 
 impl EddnAdapter {
@@ -63,7 +66,12 @@ impl EddnAdapter {
                         Err(blob) => {
                             self.queue.push_front(blob);
                             if self.queue.len() % 100 == 0{
+                                println!("------------------------------------------");
                                 println!("Queue size: {}", self.queue.len());
+                                println!("Updates per second: {}",self.count as f64/self.timestamp.elapsed().as_secs() as f64);
+                                println!("------------------------------------------");
+                                self.count = self.queue.len() - self.count;
+                                self.timestamp = Instant::now();
                             }
                             break;
                         }

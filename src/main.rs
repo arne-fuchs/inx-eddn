@@ -10,6 +10,7 @@ use iota_wallet::account_manager::AccountManager;
 use iota_wallet::iota_client::constants::SHIMMER_COIN_TYPE;
 use iota_wallet::iota_client::generate_mnemonic;
 use iota_wallet::secret::stronghold::StrongholdSecretManager;
+use tokio::time::Instant;
 
 use crate::eddn_adapter::EddnAdapter;
 use crate::hornet_adapter::Hornet;
@@ -139,7 +140,9 @@ fn main(){
     };
     let eddn = EddnAdapter{
         hornet_bus,
-        queue: VecDeque::new()
+        queue: VecDeque::new(),
+        timestamp: Instant::now(),
+        count: 1
     };
     thread::spawn(move ||{
         loop{
