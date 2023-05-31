@@ -62,7 +62,9 @@ impl EddnAdapter {
                         Ok(_) => {}
                         Err(blob) => {
                             self.queue.push_front(blob);
-                            println!("Broadcast bus full! Queue size: {}", self.queue.len());
+                            if self.queue.len() % 100 == 0{
+                                println!("Queue size: {}", self.queue.len());
+                            }
                             break;
                         }
                     }

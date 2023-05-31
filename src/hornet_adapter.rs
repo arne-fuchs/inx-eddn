@@ -43,6 +43,7 @@ impl Hornet {
                     });
                     let blob = blobs.get(0).unwrap().clone();
                     let mut is_first = true;
+                    let mut blob_index = 0;
 
                     while blobs.len() > 0 && data.len() + blob.len() + ",".as_bytes().len() + "]".as_bytes().len() < Block::LENGTH_MAX - epsilon {
                         if !is_first {
@@ -53,12 +54,13 @@ impl Hornet {
                             is_first = false;
                         }
                         let popped_blob = blobs.pop().unwrap();
+                        blob_index = blob_index + 1;
                         for byte in popped_blob {
                             data.push(byte.clone())
                         }
                     }
 
-                    if !is_first {
+                    if blob_index > 0 {
                         close_bracket.iter().for_each(|byte| {
                             data.push(byte.clone());
                         });
@@ -80,8 +82,12 @@ impl Hornet {
 
                                 match result {
                                     Ok(block) => {
+                                        println!("------------------------------------------");
                                         println!("Block send: {}", block.id());
                                         println!("Took {} seconds", now.elapsed().as_secs());
+                                        println!("Number of updates included: {}", &blob_index);
+                                        println!("Updates per second: {}", blob_index/now.elapsed().as_secs());
+                                        println!("------------------------------------------");
                                     }
                                     Err(err) => {
                                         println!("Couldn't send block chunk: {:?}", err)
