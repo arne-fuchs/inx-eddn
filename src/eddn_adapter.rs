@@ -34,7 +34,6 @@ impl EddnAdapter {
             let data = subscriber
                 .recv_bytes(0)
                 .expect("Failed receiving update");
-            let data_clone = data.clone();
 
             let mut message = decode_reader(data).unwrap();
 
