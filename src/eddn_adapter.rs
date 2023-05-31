@@ -1,16 +1,18 @@
 use std::{io, thread};
-use std::io::Read;
+use std::io::{Read, Write};
 use std::time::Duration;
 use bus::Bus;
 
 use dotenv::dotenv;
+use flate2::Compression;
 use flate2::read::ZlibDecoder;
+use flate2::write::ZlibEncoder;
 use json::JsonValue;
 use serde_json::{json, Value};
 use crate::hornet_adapter::Hornet;
 
 pub struct EddnAdapter {
-    pub hornet_bus: Bus<JsonValue>
+    pub hornet_bus: Bus<Vec<u8>>
 }
 
 impl EddnAdapter {
@@ -26,9 +28,11 @@ impl EddnAdapter {
 
         let mut update_nbr : u32 = 0;
         loop {
+
             let data = subscriber
                 .recv_bytes(0)
                 .expect("Failed receiving update");
+            let data_clone = data.clone();
 
             let message = decode_reader(data).unwrap();
 
@@ -50,7 +54,13 @@ impl EddnAdapter {
                             println!("UNCATEGORIZED: {}", value.clone())
                         }
                     }
-                    self.hornet_bus.broadcast(json);
+
+                    let mut blob = Vec::new();
+                    // Create a ZlibEncoder and write the compressed data to the buffer
+                    let mut encoder = ZlibEncoder::new(&mut blob, Compression::best());
+                    encoder.write_all(data_clone.as_slice()).unwrap();
+                    encoder.finish().unwrap();
+                    self.hornet_bus.broadcast(blob);
                 }
                 Err(err) => {
                     println!("{}",err);
@@ -70,3 +80,4 @@ fn decode_reader(bytes: Vec<u8>) -> io::Result<String> {
     z.read_to_string(&mut s)?;
     Ok(s)
 }
+

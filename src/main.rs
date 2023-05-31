@@ -20,7 +20,7 @@ mod eddn_adapter;
 fn main(){
     dotenv().expect(".env file not found");
 
-    let mut hornet_bus: Bus<JsonValue> = Bus::new(10000);
+    let mut hornet_bus: Bus<Vec<u8>> = Bus::new(10000);
     let bus_reader = hornet_bus.add_rx();
 
     println!("Loading wallet");
@@ -133,7 +133,7 @@ fn main(){
     let mut hornet = Hornet {
         node: account.client().clone(),
         account,
-        messages: Vec::new(),
+        blobs: Vec::new(),
         bus_reader,
     };
     let eddn = EddnAdapter{
