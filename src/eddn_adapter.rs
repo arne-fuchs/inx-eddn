@@ -14,7 +14,6 @@ pub struct EddnAdapter {
     pub hornet_bus: Bus<Vec<u8>>,
     pub queue: VecDeque<Vec<u8>>,
     pub timestamp: Instant,
-    pub count: usize,
 }
 
 impl EddnAdapter {
@@ -67,9 +66,8 @@ impl EddnAdapter {
                             if self.queue.len() % 100 == 0{
                                 println!("------------------------------------------");
                                 println!("Queue size: {}", self.queue.len());
-                                println!("Updates per second: {}",self.count as f64/self.timestamp.elapsed().as_secs() as f64);
+                                println!("Updates per second: {}",100.0/self.timestamp.elapsed().as_secs() as f64);
                                 println!("------------------------------------------");
-                                self.count = self.queue.len() - self.count;
                                 self.timestamp = Instant::now();
                             }
                             break;

@@ -142,7 +142,6 @@ fn main(){
         hornet_bus,
         queue: VecDeque::new(),
         timestamp: Instant::now(),
-        count: 1
     };
     thread::spawn(move ||{
         loop{
