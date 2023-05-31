@@ -33,16 +33,25 @@ impl EddnAdapter {
                 .expect("Failed receiving update");
             let data_clone = data.clone();
 
-            let message = decode_reader(data).unwrap();
+            let mut message = decode_reader(data).unwrap();
 
             if message == "END" {
                 break;
             }
 
+            let result = json::parse(message.as_str());
+            match result {
+                Ok(json) => {
+                    //println!("{}",json);
+                    message = json["message"].to_string();
+                }
+                Err(_) => {}
+            }
+
             let mut blob = Vec::new();
             // Create a ZlibEncoder and write the compressed data to the buffer
             let mut encoder = ZlibEncoder::new(&mut blob, Compression::best());
-            encoder.write_all(data_clone.as_slice()).unwrap();
+            encoder.write_all(message.as_bytes()).unwrap();
             encoder.finish().unwrap();
 
             self.queue.push_back(blob);
