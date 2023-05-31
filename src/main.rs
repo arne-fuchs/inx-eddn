@@ -27,7 +27,7 @@ fn main(){
 
     let client_options = ClientOptions::new()
         .with_local_pow(true)
-        .with_pow_worker_count(std::env::var("NUM_OF_WORKER").unwrap().parse().unwrap())
+        .with_pow_worker_count(std::env::var("NUM_OF_WORKERS").unwrap().parse().unwrap())
         .with_node(std::env::var("NODE_URL").unwrap().as_str()).unwrap();
 
     //create stronghold account
