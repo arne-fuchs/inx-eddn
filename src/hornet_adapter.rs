@@ -22,7 +22,7 @@ pub struct Hornet {
 
 impl Hornet {
     pub fn attach(&mut self, json: JsonValue) {
-        let epsilon = 10;
+        let epsilon = 20;
         let open_bracket = "[".as_bytes();
         let close_bracket = "]".as_bytes();
         let comma = ",".as_bytes();
@@ -69,38 +69,36 @@ impl Hornet {
                             data.push(byte.clone())
                         }
                     }
-                    assert_eq!(is_first, false);
-                    if is_first {
-                        return;
-                    }
 
-                    close_bracket.iter().for_each(|byte| {
-                        data.push(byte.clone());
-                    });
-
-                    let thread_data = data.clone();
-                    let thread_node = node.clone();
-                    tokio::runtime::Builder::new_current_thread()
-                        .enable_all()
-                        .build()
-                        .unwrap()
-                        .block_on(async move {
-                            let result = thread_node.block()
-                                .with_tag("EDCAS".as_bytes().to_vec())
-                                .with_data(thread_data)
-                                .finish()
-                                .await;
-
-
-                            match result {
-                                Ok(block) => {
-                                    println!("Block send: {}", block.id())
-                                }
-                                Err(err) => {
-                                    println!("Couldn't send block chunk: {:?}", err)
-                                }
-                            }
+                    if !is_first {
+                        close_bracket.iter().for_each(|byte| {
+                            data.push(byte.clone());
                         });
+
+                        let thread_data = data.clone();
+                        let thread_node = node.clone();
+                        tokio::runtime::Builder::new_current_thread()
+                            .enable_all()
+                            .build()
+                            .unwrap()
+                            .block_on(async move {
+                                let result = thread_node.block()
+                                    .with_tag("EDCAS".as_bytes().to_vec())
+                                    .with_data(thread_data)
+                                    .finish()
+                                    .await;
+
+
+                                match result {
+                                    Ok(block) => {
+                                        println!("Block send: {}", block.id())
+                                    }
+                                    Err(err) => {
+                                        println!("Couldn't send block chunk: {:?}", err)
+                                    }
+                                }
+                            });
+                    }
                 });
             } else {
                 let json_string = messages.get(0).unwrap().get_json().to_string();
@@ -115,7 +113,7 @@ impl Hornet {
                         .unwrap()
                         .block_on(async move {
                             let result = thread_node_blocks.block()
-                                .with_tag("EDCAS Market".as_bytes().to_vec())
+                                .with_tag("EDCAS Blob".as_bytes().to_vec())
                                 .with_data(Vec::from(chunk))
                                 .finish()
                                 .await;
