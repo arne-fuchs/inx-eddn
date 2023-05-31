@@ -1,22 +1,9 @@
-use std::collections::VecDeque;
-use std::io::Write;
-use std::sync::mpsc::RecvError;
-use std::thread;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 use bus::BusReader;
-use dotenv::dotenv;
-use flate2::Compression;
-use flate2::write::ZlibEncoder;
-use iota_wallet::account::{Account, AccountHandle};
-use iota_wallet::iota_client::block::{Block, BlockId};
+use iota_wallet::account::AccountHandle;
+use iota_wallet::iota_client::block::Block;
 use iota_wallet::iota_client::Client;
-use iota_wallet::iota_client::constants::SHIMMER_COIN_TYPE;
-use iota_wallet::iota_client::crypto::ciphers::aes_kw::BLOCK;
-use json::JsonValue;
-use serde_json::{json, Value};
-
-use crate::hornet_adapter;
 
 pub struct Hornet {
     pub node: Client,

@@ -5,14 +5,11 @@ use std::thread;
 
 use bus::Bus;
 use dotenv::dotenv;
-use iota_wallet::{ClientOptions, Error};
-use iota_wallet::account::types::AccountBalance;
+use iota_wallet::ClientOptions ;
 use iota_wallet::account_manager::AccountManager;
 use iota_wallet::iota_client::constants::SHIMMER_COIN_TYPE;
 use iota_wallet::iota_client::generate_mnemonic;
 use iota_wallet::secret::stronghold::StrongholdSecretManager;
-use json::JsonValue;
-use tokio::macros::support::thread_rng_n;
 
 use crate::eddn_adapter::EddnAdapter;
 use crate::hornet_adapter::Hornet;
