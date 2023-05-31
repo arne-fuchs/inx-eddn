@@ -1,18 +1,21 @@
+use std::collections::VecDeque;
 use std::fs::File;
 use std::path::PathBuf;
 use std::thread;
+
 use bus::Bus;
 use dotenv::dotenv;
+use iota_wallet::{ClientOptions, Error};
 use iota_wallet::account::types::AccountBalance;
 use iota_wallet::account_manager::AccountManager;
-use iota_wallet::{ClientOptions, Error};
 use iota_wallet::iota_client::constants::SHIMMER_COIN_TYPE;
 use iota_wallet::iota_client::generate_mnemonic;
 use iota_wallet::secret::stronghold::StrongholdSecretManager;
 use json::JsonValue;
 use tokio::macros::support::thread_rng_n;
-use crate::hornet_adapter::Hornet;
+
 use crate::eddn_adapter::EddnAdapter;
+use crate::hornet_adapter::Hornet;
 
 mod hornet_adapter;
 mod eddn_adapter;
@@ -20,7 +23,7 @@ mod eddn_adapter;
 fn main(){
     dotenv().expect(".env file not found");
 
-    let mut hornet_bus: Bus<Vec<u8>> = Bus::new(10000);
+    let mut hornet_bus: Bus<Vec<u8>> = Bus::new(1000);
     let bus_reader = hornet_bus.add_rx();
 
     println!("Loading wallet");
@@ -102,7 +105,7 @@ fn main(){
         }
     };
 
-    let account_balance: AccountBalance = tokio::runtime::Builder::new_current_thread()
+    tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
         .unwrap()
@@ -138,7 +141,8 @@ fn main(){
         bus_reader,
     };
     let eddn = EddnAdapter{
-        hornet_bus
+        hornet_bus,
+        queue: VecDeque::new()
     };
     thread::spawn(move ||{
         loop{

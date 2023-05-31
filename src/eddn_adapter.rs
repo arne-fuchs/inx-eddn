@@ -1,18 +1,17 @@
 use std::{io, thread};
+use std::collections::VecDeque;
 use std::io::{Read, Write};
 use std::time::Duration;
-use bus::Bus;
 
+use bus::Bus;
 use dotenv::dotenv;
 use flate2::Compression;
 use flate2::read::ZlibDecoder;
 use flate2::write::ZlibEncoder;
-use json::JsonValue;
-use serde_json::{json, Value};
-use crate::hornet_adapter::Hornet;
 
 pub struct EddnAdapter {
-    pub hornet_bus: Bus<Vec<u8>>
+    pub hornet_bus: Bus<Vec<u8>>,
+    pub queue: VecDeque<Vec<u8>>,
 }
 
 impl EddnAdapter {
@@ -40,31 +39,28 @@ impl EddnAdapter {
                 break;
             }
 
-            let json_result = json::parse(message.as_str());
-            match json_result {
-                Ok(json) => {
-                    let mut tag = "UNCATEGORIZED".to_string();
-                    let value = &json["message"].to_string();
-                    if &json["message"]["event"].to_string() != "null" {
-                        tag = json["message"]["event"].to_string();
-                    }else {
-                        if &json["message"]["stationName"].to_string() != "null" {
-                            tag = "Station".to_string();
-                        }else {
-                            println!("UNCATEGORIZED: {}", value.clone())
+            let mut blob = Vec::new();
+            // Create a ZlibEncoder and write the compressed data to the buffer
+            let mut encoder = ZlibEncoder::new(&mut blob, Compression::best());
+            encoder.write_all(data_clone.as_slice()).unwrap();
+            encoder.finish().unwrap();
+
+            self.queue.push_back(blob);
+            loop{
+                if !self.queue.is_empty(){
+                    let result = self.hornet_bus.try_broadcast(self.queue.pop_front().unwrap());
+                    match result {
+                        Ok(_) => {}
+                        Err(blob) => {
+                            self.queue.push_front(blob);
+                            println!("Broadcast bus full! Queue size: {}", self.queue.len());
+                            break;
                         }
                     }
+                }else {
+                    break;
+                }
 
-                    let mut blob = Vec::new();
-                    // Create a ZlibEncoder and write the compressed data to the buffer
-                    let mut encoder = ZlibEncoder::new(&mut blob, Compression::best());
-                    encoder.write_all(data_clone.as_slice()).unwrap();
-                    encoder.finish().unwrap();
-                    self.hornet_bus.broadcast(blob);
-                }
-                Err(err) => {
-                    println!("{}",err);
-                }
             }
             update_nbr += 1;
         }

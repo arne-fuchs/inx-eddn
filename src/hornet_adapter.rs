@@ -3,6 +3,7 @@ use std::io::Write;
 use std::sync::mpsc::RecvError;
 use std::thread;
 use std::time::{Duration, Instant};
+
 use bus::BusReader;
 use dotenv::dotenv;
 use flate2::Compression;
@@ -14,6 +15,7 @@ use iota_wallet::iota_client::constants::SHIMMER_COIN_TYPE;
 use iota_wallet::iota_client::crypto::ciphers::aes_kw::BLOCK;
 use json::JsonValue;
 use serde_json::{json, Value};
+
 use crate::hornet_adapter;
 
 pub struct Hornet {
@@ -134,10 +136,11 @@ impl Hornet {
         self.blobs.push(blob);
     }
     pub fn read(&mut self) {
-        let json_result = self.bus_reader.recv();
-        match json_result {
-            Ok(json) => {
-                self.attach(json);
+
+        let result = self.bus_reader.recv();
+        match result {
+            Ok(blob) => {
+                self.attach(blob);
                 //println!("Queue size: {}",  self.blobs.len());
             }
             Err(err) => {
