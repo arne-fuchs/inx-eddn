@@ -40,15 +40,6 @@ impl EddnAdapter {
                 break;
             }
 
-            let result = json::parse(message.as_str());
-            match result {
-                Ok(json) => {
-                    //println!("{}",json);
-                    message = json["message"].to_string();
-                }
-                Err(_) => {}
-            }
-
             let mut blob = Vec::new();
             // Create a ZlibEncoder and write the compressed data to the buffer
             let mut encoder = ZlibEncoder::new(&mut blob, Compression::best());

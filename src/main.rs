@@ -43,7 +43,7 @@ fn main(){
                 .build()
                 .unwrap()
                 .block_on(async {
-                    // Create the account manager
+                    // Create the account managero
                     let manager = AccountManager::builder()
                         .with_client_options(client_options)
                         .with_coin_type(SHIMMER_COIN_TYPE)
@@ -135,7 +135,6 @@ fn main(){
     let mut hornet = Hornet {
         node: account.client().clone(),
         account,
-        blobs: Vec::new(),
         bus_reader,
     };
     let eddn = EddnAdapter{
