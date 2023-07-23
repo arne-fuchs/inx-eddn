@@ -130,6 +130,8 @@ fn main(){
             return account.client().get_bech32_hrp().await.unwrap();
         });
 
+    assert_eq!(&bech32_hrp, "edcas");
+
     println!("Bech32: {}",&bech32_hrp);
     println!("Done loading wallet!");
     let mut hornet = Hornet {
