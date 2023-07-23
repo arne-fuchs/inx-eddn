@@ -2,6 +2,8 @@ use std::collections::VecDeque;
 use std::fs::File;
 use std::path::PathBuf;
 use std::thread;
+use std::thread::sleep;
+use std::time::Duration;
 
 use bus::Bus;
 use dotenv::dotenv;
@@ -26,10 +28,13 @@ fn main(){
 
     println!("Loading wallet");
 
+
     let client_options = ClientOptions::new()
         .with_local_pow(true)
         .with_pow_worker_count(std::env::var("NUM_OF_WORKERS").unwrap().parse().unwrap())
         .with_node(std::env::var("NODE_URL").unwrap().as_str()).unwrap();
+
+
 
     //create stronghold account
     let wallet_file_result = File::open("wallet.stronghold");
@@ -57,7 +62,18 @@ fn main(){
                     // Get the account we generated with `01_create_wallet`
                     let account = manager.get_account("User").await.unwrap();
 
-                    let balance = account.sync(None).await.unwrap();
+                    println!("{:?}",account.client());
+
+                    println!("Bech32: {}",account.client().get_bech32_hrp().await.unwrap());
+
+                    let mut balance_result = account.sync(None).await;
+                    while balance_result.is_err() {
+                        println!("{}",balance_result.err().unwrap());
+                        sleep(Duration::from_secs(2));
+                        balance_result = account.sync(None).await;
+                    }
+
+                    let balance = balance_result.unwrap();
 
                     println!("[Total: {} : Available: {}]",balance.base_coin.total,balance.base_coin.available);
                     println!("[NFTS Count: {}]",balance.nfts.len());
