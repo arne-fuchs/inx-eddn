@@ -23,7 +23,7 @@ impl Hornet {
             .unwrap()
             .block_on(async move {
                 let result = thread_node.block()
-                    .with_tag("EDCAS".as_bytes().to_vec())
+                    .with_tag("EDDN".as_bytes().to_vec())
                     .with_data(thread_data)
                     .finish()
                     .await;
