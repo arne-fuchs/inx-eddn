@@ -24,7 +24,7 @@ impl Hornet {
         let thread_data = blob.clone();
         let thread_node = self.node.clone();
         let now = Instant::now();
-        println!("Attaching block...");
+        //println!("Attaching block...");
         tokio::runtime::Builder::new_multi_thread()
             .enable_all()
             .build()
