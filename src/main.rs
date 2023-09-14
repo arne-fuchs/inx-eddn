@@ -39,10 +39,6 @@ fn main() {
         .with_pow_worker_count(workers)
         .with_node(std::env::var("NODE_URL").unwrap().as_str()).unwrap();
 
-    let secret_manager = StrongholdSecretManager::builder()
-        .password(std::env::var("WALLET_PASSWORD").unwrap().to_string())
-        .build("wallet.stronghold").unwrap();
-
     //create stronghold account
     let wallet_file_result = File::open("wallet.stronghold");
 
@@ -56,6 +52,10 @@ fn main() {
                 .build()
                 .unwrap()
                 .block_on(async {
+                    let secret_manager = StrongholdSecretManager::builder()
+                        .password(std::env::var("WALLET_PASSWORD").unwrap().to_string())
+                        .build("wallet.stronghold").unwrap();
+
                     let stronghold = SecretManager::Stronghold(secret_manager);
 
                     let wallet = Wallet::builder()
@@ -96,6 +96,10 @@ fn main() {
                 .build()
                 .unwrap()
                 .block_on(async {
+                    let secret_manager = StrongholdSecretManager::builder()
+                        .password(std::env::var("WALLET_PASSWORD").unwrap().to_string())
+                        .build("wallet.stronghold").unwrap();
+
                     // Only required the first time, can also be generated with `manager.generate_mnemonic()?`
                     let wallet = Wallet::builder()
                         .with_secret_manager(SecretManager::Stronghold(secret_manager))
