@@ -59,7 +59,7 @@ impl Hornet {
                                     }
                                 );
 
-                println!("{}",message);
+                //println!("{}",message);
 
                 let result = thread_node.build_block()
                     .with_tag("EDDN".as_bytes().to_vec())
@@ -69,10 +69,10 @@ impl Hornet {
 
                 match result {
                     Ok(block) => {
-                        println!("------------------------------------------");
-                        println!("Block send: {}", block.id());
-                        println!("Took {} seconds", now.elapsed().as_secs());
-                        println!("------------------------------------------");
+                        //println!("------------------------------------------");
+                        //println!("Block send: {}", block.id());
+                        //println!("Took {} seconds", now.elapsed().as_secs());
+                        //println!("------------------------------------------");
                     }
                     Err(err) => {
                         println!("Couldn't send block: {:?}", err)
