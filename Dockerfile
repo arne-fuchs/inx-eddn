@@ -1,9 +1,9 @@
 # Use a Rust base image
 FROM rust:latest as builder
 
-# Install CMake
-RUN apt-get update && \
-    apt-get install -y cmake && \
+# Install CMake, libc
+RUN apt update && \
+    apt install -y cmake libc6 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
