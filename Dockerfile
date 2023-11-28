@@ -1,6 +1,11 @@
 # Use a Rust base image
 FROM rust:latest as builder
 
+# Install CMake
+RUN apt-get update && \
+    apt-get install -y cmake && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /usr/src/app
 
 # Copy the cargo manifest and lock file for dependency resolution
