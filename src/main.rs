@@ -20,22 +20,23 @@ mod hornet_adapter;
 mod eddn_adapter;
 
 fn main() {
-    //dotenv().expect(".env file not found");
+    let workers: usize = std::env::var("NUM_OF_WORKERS").unwrap().parse().unwrap();
+    let node_url = std::env::var("NODE_URL").unwrap();
+    let wallet_path = std::env::var("WALLET_PATH").unwrap_or("wallet.stronghold".to_string());
+    let wallet_password = std::env::var("WALLET_PASSWORD").unwrap().to_string();
 
     let mut hornet_bus: Bus<Vec<u8>> = Bus::new(1000);
     let bus_reader = hornet_bus.add_rx();
 
     println!("Loading wallet");
 
-    let workers: usize = std::env::var("NUM_OF_WORKERS").unwrap().parse().unwrap();
-
     let client_options = ClientOptions::new()
         .with_local_pow(true)
         .with_pow_worker_count(workers)
-        .with_node(std::env::var("NODE_URL").unwrap().as_str()).unwrap();
+        .with_node(node_url.as_str()).unwrap();
 
     //create stronghold account
-    let wallet_file_result = File::open(std::env::var("WALLET_PATH").unwrap_or("wallet.stronghold".to_string()));
+    let wallet_file_result = File::open(wallet_path.clone());
 
 
     let account = match wallet_file_result {
@@ -48,8 +49,8 @@ fn main() {
                 .unwrap()
                 .block_on(async {
                     let secret_manager = StrongholdSecretManager::builder()
-                        .password(std::env::var("WALLET_PASSWORD").unwrap().to_string())
-                        .build("wallet.stronghold").unwrap();
+                        .password(wallet_password.clone())
+                        .build(wallet_path.clone()).unwrap();
 
                     let stronghold = SecretManager::Stronghold(secret_manager);
 
@@ -92,8 +93,8 @@ fn main() {
                 .unwrap()
                 .block_on(async {
                     let secret_manager = StrongholdSecretManager::builder()
-                        .password(std::env::var("WALLET_PASSWORD").unwrap().to_string())
-                        .build("wallet.stronghold").unwrap();
+                        .password(wallet_password.clone())
+                        .build(wallet_path.clone()).unwrap();
 
                     // Only required the first time, can also be generated with `manager.generate_mnemonic()?`
                     let wallet = Wallet::builder()
@@ -152,8 +153,8 @@ fn main() {
         .expect("Failed creating thread")
         .block_on(async {
             let secret_manager = StrongholdSecretManager::builder()
-                .password(std::env::var("WALLET_PASSWORD").unwrap().to_string())
-                .build("wallet.stronghold").unwrap();
+                .password(wallet_password.clone())
+                .build(wallet_path.clone()).unwrap();
             let sig: String =
                 secret_manager.sign_ed25519(&[0, 1],
                                             Bip44::new(IOTA_COIN_TYPE)
@@ -171,8 +172,8 @@ fn main() {
         node: account.client().clone(),
         account,
         stronghold: StrongholdSecretManager::builder()
-            .password(std::env::var("WALLET_PASSWORD").unwrap().to_string())
-            .build("wallet.stronghold").unwrap(),
+            .password(wallet_password.clone())
+            .build(wallet_path.clone()).unwrap(),
         bus_reader,
     };
     let eddn = EddnAdapter {
