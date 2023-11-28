@@ -11,26 +11,26 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Build
-        run: cargo build --verbose
-  docker:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Docker Builds
-        uses: docker/setup-buildx-action@v3
-      - name: Build
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          load: true
-          tags: inx-eddn:latest
-      - name: Inspect
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Build
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
         run: |
-          docker image inspect inx-eddn:latest
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            -t your-docker-username/your-image-name:latest \
+            .
+
+      - name: Login to Docker Hub
+        if: success()
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker image to Docker Hub
+        if: success()
+        run: docker push frankthefish/inx-eddn:latest
