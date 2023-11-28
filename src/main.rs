@@ -1,14 +1,12 @@
 use std::collections::VecDeque;
 use std::fs::File;
-use std::path::PathBuf;
 use std::thread;
 use std::thread::sleep;
 use std::time::Duration;
 
 use bus::Bus;
 use dotenv::dotenv;
-use iota_sdk::client::constants::SHIMMER_COIN_TYPE;
-use iota_sdk::client::generate_mnemonic;
+use iota_sdk::client::constants::{IOTA_COIN_TYPE, SHIMMER_COIN_TYPE};
 use iota_sdk::client::secret::{SecretManage, SecretManager};
 use iota_sdk::client::secret::stronghold::StrongholdSecretManager;
 use iota_sdk::crypto::keys::bip44::Bip44;
@@ -67,14 +65,14 @@ fn main() {
                     let account = wallet
                         .get_account("User").await.unwrap();
 
-                    println!("{:?}", account.client());
+                    //println!("{:?}", account.client());
 
                     println!("Bech32: {}", account.client().get_bech32_hrp().await.unwrap());
 
                     let mut balance_result = account.sync(None).await;
                     while balance_result.is_err() {
                         println!("{}", balance_result.err().unwrap());
-                        sleep(Duration::from_secs(2));
+                        tokio::time::sleep(Duration::from_secs(2)).await;
                         balance_result = account.sync(None).await;
                     }
 
@@ -161,7 +159,7 @@ fn main() {
                 .build("wallet.stronghold").unwrap();
             let sig: String =
                 secret_manager.sign_ed25519(&[0, 1],
-                                            Bip44::new(SHIMMER_COIN_TYPE)
+                                            Bip44::new(IOTA_COIN_TYPE)
                                                 .with_account(0)
                                                 .with_change(false as _)
                                                 .with_address_index(0),
