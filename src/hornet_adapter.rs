@@ -1,4 +1,3 @@
-use std::time::Instant;
 use base64::Engine;
 use base64::engine::general_purpose;
 
@@ -23,7 +22,7 @@ impl Hornet {
     pub fn attach(&mut self, blob: Vec<u8>) {
         let thread_data = blob.clone();
         let thread_node = self.node.clone();
-        let now = Instant::now();
+        //let now = Instant::now();
         //println!("Attaching block...");
         tokio::runtime::Builder::new_multi_thread()
             .enable_all()
@@ -68,7 +67,7 @@ impl Hornet {
                     .await;
 
                 match result {
-                    Ok(block) => {
+                    Ok(_) => {
                         //println!("------------------------------------------");
                         //println!("Block send: {}", block.id());
                         //println!("Took {} seconds", now.elapsed().as_secs());

@@ -1,16 +1,13 @@
 use std::collections::VecDeque;
 use std::fs::File;
 use std::thread;
-use std::thread::sleep;
 use std::time::Duration;
 
 use bus::Bus;
-use dotenv::dotenv;
 use iota_sdk::client::constants::{IOTA_COIN_TYPE, SHIMMER_COIN_TYPE};
 use iota_sdk::client::secret::{SecretManage, SecretManager};
 use iota_sdk::client::secret::stronghold::StrongholdSecretManager;
 use iota_sdk::crypto::keys::bip44::Bip44;
-use iota_sdk::types::block::address::ToBech32Ext;
 use iota_sdk::Wallet;
 use iota_sdk::wallet::ClientOptions;
 use rustc_hex::ToHex;
@@ -23,7 +20,7 @@ mod hornet_adapter;
 mod eddn_adapter;
 
 fn main() {
-    dotenv().expect(".env file not found");
+    //dotenv().expect(".env file not found");
 
     let mut hornet_bus: Bus<Vec<u8>> = Bus::new(1000);
     let bus_reader = hornet_bus.add_rx();
@@ -38,7 +35,7 @@ fn main() {
         .with_node(std::env::var("NODE_URL").unwrap().as_str()).unwrap();
 
     //create stronghold account
-    let wallet_file_result = File::open("wallet.stronghold");
+    let wallet_file_result = File::open(std::env::var("WALLET_PATH").unwrap_or("wallet.stronghold".to_string()));
 
 
     let account = match wallet_file_result {

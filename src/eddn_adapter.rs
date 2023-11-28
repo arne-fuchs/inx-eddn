@@ -1,4 +1,4 @@
-use std::{io, thread};
+use std::io;
 use std::collections::VecDeque;
 use std::io::{Read, Write};
 use std::time::Duration;
@@ -25,7 +25,7 @@ impl EddnAdapter {
         subscriber.connect(std::env::var("ZEROMQ_URL").unwrap().as_str()).expect("Failed to connect to ZeroMQ Server");
         subscriber.set_subscribe(b"").expect("Failed to subscribe to channel");
 
-        thread::sleep(Duration::from_millis(1));
+        tokio::time::sleep(Duration::from_millis(1)).await;
 
         let mut update_nbr : u32 = 0;
         loop {
@@ -34,7 +34,7 @@ impl EddnAdapter {
                 .recv_bytes(0)
                 .expect("Failed receiving update");
 
-            let mut message = decode_reader(data).unwrap();
+            let message = decode_reader(data).unwrap();
 
             if message == "END" {
                 break;
