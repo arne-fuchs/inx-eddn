@@ -30,11 +30,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Build Docker image
-        run: |
-          docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            -t frankthefish/inx-eddn:latest \
-            .
+        run: docker build --platform linux/amd64 -t frankthefish/inx-eddn:latest .
 
       - name: Login to Docker Hub
         if: success()
