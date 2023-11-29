@@ -4,7 +4,7 @@ use std::thread;
 use std::time::Duration;
 
 use bus::Bus;
-use iota_sdk::client::constants::{IOTA_COIN_TYPE, SHIMMER_COIN_TYPE};
+use iota_sdk::client::constants::{IOTA_COIN_TYPE};
 use iota_sdk::client::secret::{SecretManage, SecretManager};
 use iota_sdk::client::secret::stronghold::StrongholdSecretManager;
 use iota_sdk::crypto::keys::bip44::Bip44;
@@ -57,7 +57,7 @@ fn main() {
                     let wallet = Wallet::builder()
                         .with_secret_manager(stronghold)
                         .with_client_options(client_options)
-                        .with_coin_type(SHIMMER_COIN_TYPE)
+                        .with_coin_type(IOTA_COIN_TYPE)
                         .finish().await.unwrap();
 
                     let account = wallet
@@ -100,7 +100,7 @@ fn main() {
                     let wallet = Wallet::builder()
                         .with_secret_manager(SecretManager::Stronghold(secret_manager))
                         .with_client_options(client_options)
-                        .with_coin_type(SHIMMER_COIN_TYPE)
+                        .with_coin_type(IOTA_COIN_TYPE)
                         .finish().await.unwrap();
 
                     // The mnemonic only needs to be stored the first time
