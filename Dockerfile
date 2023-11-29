@@ -26,7 +26,7 @@ RUN cargo build --release
 #COPY /app/target/release/inx-eddn .
 
 # Create a new, smaller image without the build dependencies
-FROM ubuntu:23.04
+FROM ubuntu:latest
 
 WORKDIR /app
 
