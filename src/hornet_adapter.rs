@@ -22,8 +22,6 @@ impl Hornet {
     pub fn attach(&mut self, blob: Vec<u8>) {
         let thread_data = blob.clone();
         let thread_node = self.node.clone();
-        //let now = Instant::now();
-        //println!("Attaching block...");
         tokio::runtime::Builder::new_multi_thread()
             .enable_all()
             .build()
@@ -58,8 +56,6 @@ impl Hornet {
                                     }
                                 );
 
-                //println!("{}",message);
-
                 let result = thread_node.build_block()
                     .with_tag("EDDN".as_bytes().to_vec())
                     .with_data(message.to_string().as_bytes().to_vec())
@@ -67,12 +63,7 @@ impl Hornet {
                     .await;
 
                 match result {
-                    Ok(_) => {
-                        //println!("------------------------------------------");
-                        //println!("Block send: {}", block.id());
-                        //println!("Took {} seconds", now.elapsed().as_secs());
-                        //println!("------------------------------------------");
-                    }
+                    Ok(_) => {}
                     Err(err) => {
                         println!("Couldn't send block: {:?}", err)
                     }
@@ -85,7 +76,6 @@ impl Hornet {
         match result {
             Ok(blob) => {
                 self.attach(blob);
-                //println!("Queue size: {}",  self.blobs.len());
             }
             Err(err) => {
                 println!("Rec. error: {}", err);
