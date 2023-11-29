@@ -4,7 +4,6 @@ use std::io::{Read, Write};
 use std::time::Duration;
 
 use bus::Bus;
-use dotenv::dotenv;
 use flate2::Compression;
 use flate2::read::ZlibDecoder;
 use flate2::write::ZlibEncoder;
@@ -18,7 +17,6 @@ pub struct EddnAdapter {
 
 impl EddnAdapter {
     pub async fn subscribe_to_eddn(mut self){
-        dotenv().expect(".env file not found");
 
         let context = zmq::Context::new();
         let subscriber = context.socket(zmq::SUB).unwrap();

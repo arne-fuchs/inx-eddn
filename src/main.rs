@@ -1,7 +1,5 @@
 use std::collections::VecDeque;
-use std::fs::File;
 use std::thread;
-use std::time::Duration;
 
 use bus::Bus;
 use iota_sdk::client::constants::{IOTA_COIN_TYPE};
@@ -35,114 +33,84 @@ fn main() {
         .with_pow_worker_count(workers)
         .with_node(node_url.as_str()).unwrap();
 
-    //create stronghold account
-    let wallet_file_result = File::open(wallet_path.clone());
+    let secret_manager = StrongholdSecretManager::builder()
+        .password(wallet_password.clone())
+        .build(wallet_path.clone()).unwrap();
 
+    let stronghold = SecretManager::Stronghold(secret_manager);
 
-    let account = match wallet_file_result {
-        Ok(file) => {
-            println!("{:?}", file);
-            println!("Stronghold file found");
-            tokio::runtime::Builder::new_current_thread()
-                .enable_all()
-                .build()
-                .unwrap()
-                .block_on(async {
-                    let secret_manager = StrongholdSecretManager::builder()
-                        .password(wallet_password.clone())
-                        .build(wallet_path.clone()).unwrap();
-
-                    let stronghold = SecretManager::Stronghold(secret_manager);
-
-                    let wallet = Wallet::builder()
-                        .with_secret_manager(stronghold)
-                        .with_client_options(client_options)
-                        .with_coin_type(IOTA_COIN_TYPE)
-                        .finish().await.unwrap();
-
-                    let account = wallet
-                        .get_account("User").await.unwrap();
-
-                    //println!("{:?}", account.client());
-
-                    println!("Bech32: {}", account.client().get_bech32_hrp().await.unwrap());
-
-                    let mut balance_result = account.sync(None).await;
-                    while balance_result.is_err() {
-                        println!("{}", balance_result.err().unwrap());
-                        tokio::time::sleep(Duration::from_secs(2)).await;
-                        balance_result = account.sync(None).await;
-                    }
-
-                    let balance = balance_result.unwrap();
-
-                    println!("[Total: {} : Available: {}]", balance.base_coin().total(), balance.base_coin().available());
-                    println!("[NFTS Count: {}]", balance.nfts().len());
-                    println!("[Req. storage deposit (basic): {}]", balance.required_storage_deposit().basic());
-
-                    return account;
-                })
-        }
-        Err(err) => {
-            println!("{}", &err);
-            println!("{}", err);
-            println!("Stronghold file not found -> creating");
-            tokio::runtime::Builder::new_current_thread()
-                .enable_all()
-                .build()
-                .unwrap()
-                .block_on(async {
-                    let secret_manager = StrongholdSecretManager::builder()
-                        .password(wallet_password.clone())
-                        .build(wallet_path.clone()).unwrap();
-
-                    // Only required the first time, can also be generated with `manager.generate_mnemonic()?`
-                    let wallet = Wallet::builder()
-                        .with_secret_manager(SecretManager::Stronghold(secret_manager))
-                        .with_client_options(client_options)
-                        .with_coin_type(IOTA_COIN_TYPE)
-                        .finish().await.unwrap();
-
-                    // The mnemonic only needs to be stored the first time
-                    let mnemonic = wallet.generate_mnemonic().unwrap();
-                    wallet.store_mnemonic(mnemonic).await.unwrap();
-
-                    // Create a new account
-                    wallet
-                        .create_account()
-                        .with_alias("User".to_string())
-                        .finish()
-                        .await.unwrap()
-                })
-        }
-    };
-
-    tokio::runtime::Builder::new_current_thread()
+    let account =  tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
         .unwrap()
         .block_on(async {
-            return account.sync(None).await.unwrap();
+            let wallet = Wallet::builder()
+                .with_secret_manager(stronghold)
+                .with_client_options(client_options)
+                .with_coin_type(IOTA_COIN_TYPE)
+                .finish().await.unwrap();
+
+            let account = match wallet
+                .get_account("User").await {
+                Ok(account) => {account}
+                Err(err) => {
+                    println!("{}",err);
+
+                    let mnemonic = wallet.generate_mnemonic().unwrap();
+                     match wallet.store_mnemonic(mnemonic).await {
+                         Ok(_) => {}
+                         Err(err) => {
+                             println!("{}",err);
+                         }
+                     }
+
+                    // Create a new account
+                    wallet
+                        .create_account()
+                        .with_alias("User")
+                        .finish().await.unwrap()
+                }
+            };
+
+            println!("Bech32: {}", account.client().get_bech32_hrp().await.unwrap());
+
+            println!("Syncing balance");
+            //let balance = account.sync(None).await.unwrap();
+
+            //println!("[Total: {} : Available: {}]", balance.base_coin().total(), balance.base_coin().available());
+            //println!("[NFTS Count: {}]", balance.nfts().len());
+            //println!("[Req. storage deposit (basic): {}]", balance.required_storage_deposit().basic());
+
+            println!("Balance synced");
+
+            return account;
         });
 
+    println!("Wallet loaded");
+    println!("Creating address");
+
     //get address one time so it doesn't have to be created each time
-    let _ = tokio::runtime::Builder::new_current_thread()
+    let address = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
         .expect("Failed creating addresses")
         .block_on(async {
             let address = account.addresses().await.unwrap()[0].address().to_string();
-            println!("Address: {}", &address);
             return address;
         });
+
+    println!("Address created: {}", address);
+    println!("Getting Hrp");
 
     let bech32_hrp = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
-        .expect("Failed creating addresses")
+        .expect("Failed getting hrp")
         .block_on(async {
             return account.client().get_bech32_hrp().await.unwrap();
         });
+
+    println!("Hrp: {}", bech32_hrp.to_string());
 
     assert_eq!(&bech32_hrp, "edcas");
 
@@ -168,6 +136,7 @@ fn main() {
     println!("Public key: {}", sig);
     println!("Bech32: {}", &bech32_hrp);
     println!("Done loading wallet!");
+    println!("Starting threads");
     let mut hornet = Hornet {
         node: account.client().clone(),
         account,
