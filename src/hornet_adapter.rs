@@ -63,7 +63,9 @@ impl Hornet {
                     .await;
 
                 match result {
-                    Ok(_) => {}
+                    Ok(block) => {
+                        println!("{}",block.id());
+                    }
                     Err(err) => {
                         println!("Couldn't send block: {:?}", err)
                     }
