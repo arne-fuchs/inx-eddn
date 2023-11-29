@@ -1,9 +1,9 @@
+use std::sync::mpsc::Receiver;
 use base64::Engine;
 use base64::engine::general_purpose;
 
-use bus::BusReader;
 use iota_sdk::client::Client;
-use iota_sdk::client::constants::SHIMMER_COIN_TYPE;
+use iota_sdk::client::constants::IOTA_COIN_TYPE;
 use iota_sdk::client::secret::SecretManage;
 use iota_sdk::client::secret::stronghold::StrongholdSecretManager;
 use iota_sdk::crypto::keys::bip44::Bip44;
@@ -15,7 +15,7 @@ pub struct Hornet {
     pub node: Client,
     pub account: Account,
     pub stronghold: StrongholdSecretManager,
-    pub bus_reader: BusReader<Vec<u8>>,
+    pub bus_reader: Receiver<Vec<u8>>,
 }
 
 impl Hornet {
@@ -28,7 +28,7 @@ impl Hornet {
             .unwrap()
             .block_on(async move {
 
-                let bip44_chain = Bip44::new(SHIMMER_COIN_TYPE)
+                let bip44_chain = Bip44::new(IOTA_COIN_TYPE)
                     .with_account(0)
                     .with_change(false as _)
                     .with_address_index(0);
@@ -63,8 +63,8 @@ impl Hornet {
                     .await;
 
                 match result {
-                    Ok(block) => {
-                        println!("{}",block.id());
+                    Ok(_block) => {
+                        //println!("{}",_block.id());
                     }
                     Err(err) => {
                         println!("Couldn't send block: {:?}", err)

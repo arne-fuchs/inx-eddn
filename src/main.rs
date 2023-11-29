@@ -1,7 +1,6 @@
-use std::collections::VecDeque;
+use std::sync::mpsc::channel;
 use std::thread;
 
-use bus::Bus;
 use iota_sdk::client::constants::{IOTA_COIN_TYPE};
 use iota_sdk::client::secret::{SecretManage, SecretManager};
 use iota_sdk::client::secret::stronghold::StrongholdSecretManager;
@@ -23,8 +22,8 @@ fn main() {
     let wallet_path = std::env::var("WALLET_PATH").unwrap_or("wallet.stronghold".to_string());
     let wallet_password = std::env::var("WALLET_PASSWORD").unwrap().to_string();
 
-    let mut hornet_bus: Bus<Vec<u8>> = Bus::new(1000);
-    let bus_reader = hornet_bus.add_rx();
+
+    let (hornet_bus, bus_reader) = channel::<Vec<u8>>();
 
     println!("Loading wallet");
 
@@ -74,14 +73,16 @@ fn main() {
 
             println!("Bech32: {}", account.client().get_bech32_hrp().await.unwrap());
 
-            println!("Syncing balance");
+            //FIXME Crashes for no reason
+            //println!("Syncing balance");
+
             //let balance = account.sync(None).await.unwrap();
 
             //println!("[Total: {} : Available: {}]", balance.base_coin().total(), balance.base_coin().available());
             //println!("[NFTS Count: {}]", balance.nfts().len());
             //println!("[Req. storage deposit (basic): {}]", balance.required_storage_deposit().basic());
 
-            println!("Balance synced");
+            //println!("Balance synced");
 
             return account;
         });
@@ -118,7 +119,7 @@ fn main() {
     sig.push_str(tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
-        .expect("Failed creating thread")
+        .expect("Failed creating threads")
         .block_on(async {
             let secret_manager = StrongholdSecretManager::builder()
                 .password(wallet_password.clone())
@@ -147,7 +148,6 @@ fn main() {
     };
     let eddn = EddnAdapter {
         hornet_bus,
-        queue: VecDeque::new(),
         timestamp: Instant::now(),
     };
     thread::spawn(move || {
