@@ -1,6 +1,7 @@
 use std::sync::mpsc::channel;
 use std::{env, fs, thread};
 use std::process::exit;
+use iota_sdk::client::Client;
 
 use iota_sdk::client::constants::{IOTA_COIN_TYPE};
 use iota_sdk::client::secret::{SecretManage, SecretManager};
@@ -38,6 +39,15 @@ fn main() {
             let secret_manager = StrongholdSecretManager::builder()
                 .password(wallet_password.clone())
                 .build(wallet_path.clone()).unwrap();
+
+            let mnemonic = Client::generate_mnemonic().unwrap();
+            match secret_manager.store_mnemonic(mnemonic).await {
+                Ok(_) => {}
+                Err(err) => {
+                    println!("{}",err);
+                }
+            }
+
             let sig: String =
                 secret_manager.sign_ed25519(&[0, 1],
                                             Bip44::new(IOTA_COIN_TYPE)
