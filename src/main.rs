@@ -1,5 +1,6 @@
 use std::sync::mpsc::channel;
-use std::thread;
+use std::{env, fs, thread};
+use std::process::exit;
 
 use iota_sdk::client::constants::{IOTA_COIN_TYPE};
 use iota_sdk::client::secret::{SecretManage, SecretManager};
@@ -8,7 +9,6 @@ use iota_sdk::crypto::keys::bip44::Bip44;
 use iota_sdk::Wallet;
 use iota_sdk::wallet::ClientOptions;
 use rustc_hex::ToHex;
-use tokio::time::Instant;
 
 use crate::eddn_adapter::EddnAdapter;
 use crate::hornet_adapter::Hornet;
@@ -17,10 +17,15 @@ mod hornet_adapter;
 mod eddn_adapter;
 
 fn main() {
-    let workers: usize = std::env::var("NUM_OF_WORKERS").unwrap().parse().unwrap();
-    let node_url = std::env::var("NODE_URL").unwrap();
-    let wallet_path = std::env::var("WALLET_PATH").unwrap_or("wallet.stronghold".to_string());
-    let wallet_password = std::env::var("WALLET_PASSWORD").unwrap().to_string();
+    let args: Vec<String> = env::args().collect();
+    if args.len() > 2{
+        panic!("Too many arguments provided!");
+    }
+
+    let workers: usize = env::var("NUM_OF_WORKERS").unwrap().parse().unwrap();
+    let node_url = env::var("NODE_URL").unwrap();
+    let wallet_path = env::var("WALLET_PATH").unwrap_or("wallet.stronghold".to_string());
+    let wallet_password = env::var("WALLET_PASSWORD").unwrap().to_string();
 
 
     let (hornet_bus, bus_reader) = channel::<Vec<u8>>();
@@ -135,20 +140,28 @@ fn main() {
         }).as_str());
 
     println!("Public key: {}", sig);
+    if let Some(arg) = args.get(1){
+        if arg == "--saveKey" {
+            let key_location = env::var("KEY_SAVE_LOCATION").unwrap();
+            println!("Save key argument provided -> saving key to location {}", key_location);
+            fs::write(key_location,sig).unwrap();
+            exit(0);
+        }else {
+            println!("Unknown argument: {}", arg);
+        }
+    }
     println!("Bech32: {}", &bech32_hrp);
     println!("Done loading wallet!");
     println!("Starting threads");
     let mut hornet = Hornet {
         node: account.client().clone(),
-        account,
         stronghold: StrongholdSecretManager::builder()
             .password(wallet_password.clone())
             .build(wallet_path.clone()).unwrap(),
         bus_reader,
     };
     let eddn = EddnAdapter {
-        hornet_bus,
-        timestamp: Instant::now(),
+        hornet_bus
     };
     thread::spawn(move || {
         loop {

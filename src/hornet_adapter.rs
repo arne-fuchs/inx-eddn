@@ -7,13 +7,11 @@ use iota_sdk::client::constants::IOTA_COIN_TYPE;
 use iota_sdk::client::secret::SecretManage;
 use iota_sdk::client::secret::stronghold::StrongholdSecretManager;
 use iota_sdk::crypto::keys::bip44::Bip44;
-use iota_sdk::wallet::Account;
 use serde_json::json;
 use rustc_hex::ToHex;
 
 pub struct Hornet {
     pub node: Client,
-    pub account: Account,
     pub stronghold: StrongholdSecretManager,
     pub bus_reader: Receiver<Vec<u8>>,
 }

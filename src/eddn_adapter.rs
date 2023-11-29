@@ -6,15 +6,13 @@ use std::time::Duration;
 use flate2::Compression;
 use flate2::read::ZlibDecoder;
 use flate2::write::ZlibEncoder;
-use tokio::time::Instant;
 
 pub struct EddnAdapter {
-    pub hornet_bus: Sender<Vec<u8>>,
-    pub timestamp: Instant,
+    pub hornet_bus: Sender<Vec<u8>>
 }
 
 impl EddnAdapter {
-    pub async fn subscribe_to_eddn(mut self) {
+    pub async fn subscribe_to_eddn(self) {
         let context = zmq::Context::new();
         let subscriber = context.socket(zmq::SUB).unwrap();
         subscriber.connect(std::env::var("ZEROMQ_URL").unwrap().as_str()).expect("Failed to connect to ZeroMQ Server");
