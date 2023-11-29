@@ -34,6 +34,9 @@ Saves the public key to a file. The file location is defined by KEY_SAVE_LOCATIO
       - "WALLET_PATH=wallet/wallet.stronghold"
       - "NUM_OF_WORKERS=4"
       - "KEY_SAVE_LOCATION=public_key/public_key"
+    command:
+      - "./inx-eddn"
+      - "--saveKey"
     volumes:
       - ./inx-eddn/wallet:/app/wallet
       - ./inx-eddn/public_key:/app/public_key
