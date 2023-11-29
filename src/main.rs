@@ -27,6 +27,42 @@ fn main() {
     let wallet_path = env::var("WALLET_PATH").unwrap_or("wallet.stronghold".to_string());
     let wallet_password = env::var("WALLET_PASSWORD").unwrap().to_string();
 
+    println!("Getting secret manager");
+
+    let mut sig = "0x".to_string();
+    let (secret_manager, suffix) = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .expect("Failed creating threads")
+        .block_on(async {
+            let secret_manager = StrongholdSecretManager::builder()
+                .password(wallet_password.clone())
+                .build(wallet_path.clone()).unwrap();
+            let sig: String =
+                secret_manager.sign_ed25519(&[0, 1],
+                                            Bip44::new(IOTA_COIN_TYPE)
+                                                .with_account(0)
+                                                .with_change(false as _)
+                                                .with_address_index(0),
+                ).await.unwrap().public_key().to_bytes().to_hex();
+            return (secret_manager,sig);
+        });
+    sig.push_str(suffix.as_str());
+    let stronghold = SecretManager::Stronghold(secret_manager);
+
+    println!("Public key: {}", sig);
+
+    if let Some(arg) = args.get(1){
+        if arg == "--saveKey" {
+            let key_location = env::var("KEY_SAVE_LOCATION").unwrap();
+            println!("Save key argument provided -> saving key to location {}", key_location);
+            fs::write(key_location,sig).unwrap();
+            exit(0);
+        }else {
+            println!("Unknown argument: {}", arg);
+        }
+    }
+
 
     let (hornet_bus, bus_reader) = channel::<Vec<u8>>();
 
@@ -36,12 +72,6 @@ fn main() {
         .with_local_pow(true)
         .with_pow_worker_count(workers)
         .with_node(node_url.as_str()).unwrap();
-
-    let secret_manager = StrongholdSecretManager::builder()
-        .password(wallet_password.clone())
-        .build(wallet_path.clone()).unwrap();
-
-    let stronghold = SecretManager::Stronghold(secret_manager);
 
     let account =  tokio::runtime::Builder::new_current_thread()
         .enable_all()
@@ -118,38 +148,8 @@ fn main() {
 
     println!("Hrp: {}", bech32_hrp.to_string());
 
-    assert_eq!(&bech32_hrp, "edcas");
+    assert_eq!(&bech32_hrp.to_string(), "edcas");
 
-    let mut sig = "0x".to_string();
-    sig.push_str(tokio::runtime::Builder::new_current_thread()
-        .enable_all()
-        .build()
-        .expect("Failed creating threads")
-        .block_on(async {
-            let secret_manager = StrongholdSecretManager::builder()
-                .password(wallet_password.clone())
-                .build(wallet_path.clone()).unwrap();
-            let sig: String =
-                secret_manager.sign_ed25519(&[0, 1],
-                                            Bip44::new(IOTA_COIN_TYPE)
-                                                .with_account(0)
-                                                .with_change(false as _)
-                                                .with_address_index(0),
-                ).await.unwrap().public_key().to_bytes().to_hex();
-            return sig;
-        }).as_str());
-
-    println!("Public key: {}", sig);
-    if let Some(arg) = args.get(1){
-        if arg == "--saveKey" {
-            let key_location = env::var("KEY_SAVE_LOCATION").unwrap();
-            println!("Save key argument provided -> saving key to location {}", key_location);
-            fs::write(key_location,sig).unwrap();
-            exit(0);
-        }else {
-            println!("Unknown argument: {}", arg);
-        }
-    }
     println!("Bech32: {}", &bech32_hrp);
     println!("Done loading wallet!");
     println!("Starting threads");
