@@ -64,9 +64,11 @@ fn main() {
 
     if let Some(arg) = args.get(1){
         if arg == "--saveKey" {
+            let mut prefix = "EDDN_PUBLIC_KEY=".to_string();
+            prefix.push_str(&sig);
             let key_location = env::var("KEY_SAVE_LOCATION").unwrap();
             println!("Save key argument provided -> saving key to location {}", key_location);
-            fs::write(key_location,sig).unwrap();
+            fs::write(key_location,prefix).unwrap();
             exit(0);
         }else {
             println!("Unknown argument: {}", arg);
