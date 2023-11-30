@@ -21,7 +21,9 @@ Saves the public key to a file. The file location is defined by KEY_SAVE_LOCATIO
 
 ## Docker Compose Example
 
-### For generating and saving key
+### For generating and saving key to file
+
+The inx-edcas-indexer ist able to pick up the key via file.
 
 ```dockerfile
   generate_public_key:
