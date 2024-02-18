@@ -1,6 +1,8 @@
 use std::sync::mpsc::channel;
 use std::{env, fs, thread};
+use std::net::{IpAddr, Ipv4Addr};
 use std::process::exit;
+use std::str::FromStr;
 use iota_sdk::client::Client;
 
 use iota_sdk::client::constants::{IOTA_COIN_TYPE};
@@ -19,14 +21,34 @@ mod eddn_adapter;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() > 2{
-        panic!("Too many arguments provided!");
-    }
 
-    let workers: usize = env::var("NUM_OF_WORKERS").unwrap().parse().unwrap();
-    let node_url = env::var("NODE_URL").unwrap();
-    let wallet_path = env::var("WALLET_PATH").unwrap_or("wallet.stronghold".to_string());
-    let wallet_password = env::var("WALLET_PASSWORD").unwrap().to_string();
+    let mut workers: usize = env::var("NUM_OF_WORKERS").unwrap().parse().unwrap_or(4);
+    let mut node_url = env::var("NODE_URL").unwrap_or("127.0.0.1".to_string());
+    let mut wallet_path = env::var("WALLET_PATH").unwrap_or("wallet.stronghold".to_string());
+    let mut wallet_password = env::var("WALLET_PASSWORD").unwrap_or("".to_string());
+    let mut hrp = env::var("HRP").unwrap_or("edcas".to_string());
+
+    let length = args.len();
+    for i in 1..length {
+        match args[i].as_str() {
+            "-a" => {
+                node_url = args[i+1].clone();
+            }
+            "-w" => {
+                workers = usize::from_str(args[i+1].as_str()).unwrap();
+            }
+            "-p" => {
+                wallet_password = args[i+1].clone();
+            }
+            "-f" => {
+                wallet_path = args[i+1].clone();
+            }
+            "-h" => {
+                hrp = args[i+1].clone();
+            }
+            &_ => {}
+        }
+    }
 
     println!("Getting secret manager");
 
@@ -160,7 +182,7 @@ fn main() {
 
     println!("Hrp: {}", bech32_hrp.to_string());
 
-    assert_eq!(&bech32_hrp.to_string(), "edcas");
+    assert_eq!(&bech32_hrp.to_string(), hrp.as_str());
 
     println!("Bech32: {}", &bech32_hrp);
     println!("Done loading wallet!");
