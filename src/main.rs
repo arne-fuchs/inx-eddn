@@ -548,7 +548,7 @@ async fn execute_send_repeatable(function_call: FunctionCall<Arc<SignerMiddlewar
     while let Err(err) = execute_send(function_call.clone()).await {
         match err {
             RepeatableError(_) => {
-                tokio::time::sleep(Duration::from_secs(1)).await;
+                tokio::time::sleep(Duration::from_secs(env::var("DURATION_TIMEOUT").unwrap_or("5".into()).parse().unwrap_or(5))).await;
             }
             NonRepeatableError(_) => {break}
         }
@@ -573,43 +573,43 @@ async fn execute_send(function_call: FunctionCall<Arc<SignerMiddleware<Provider<
                 Err(err) => {
                     match err {
                         ProviderError::JsonRpcClientError(err) => {
-                            eprintln!("JsonRpcClientError: {}",err.to_string());
+                            eprintln!("JsonRpcClientError: {}",err);
                             Err(RepeatableError(err.to_string()))
                         }
                         ProviderError::EnsError(err) => {
-                            eprintln!("EnsError: {}",err.to_string());
+                            eprintln!("EnsError: {}",err);
                             Err(NonRepeatableError(err.to_string()))
                         }
                         ProviderError::EnsNotOwned(err) => {
-                            eprintln!("EnsNotOwned: {}",err.to_string());
+                            eprintln!("EnsNotOwned: {}",err);
                             Err(NonRepeatableError(err.to_string()))
                         }
                         ProviderError::SerdeJson(err) => {
-                            eprintln!("SerdeJson: {}",err.to_string());
+                            eprintln!("SerdeJson: {}",err);
                             Err(NonRepeatableError(err.to_string()))
                         }
                         ProviderError::HexError(err) => {
-                            eprintln!("HexError: {}",err.to_string());
+                            eprintln!("HexError: {}",err);
                             Err(NonRepeatableError(err.to_string()))
                         }
                         ProviderError::HTTPError(err) => {
-                            eprintln!("HTTPError: {}",err.to_string());
+                            eprintln!("HTTPError: {}",err);
                             Err(NonRepeatableError(err.to_string()))
                         }
                         ProviderError::CustomError(err) => {
-                            eprintln!("CustomError: {}",err.to_string());
+                            eprintln!("CustomError: {}",err);
                             Err(NonRepeatableError(err.to_string()))
                         }
                         ProviderError::UnsupportedRPC => {
-                            eprintln!("UnsupportedRPC: {}", "UnsupportedRPC".to_string());
+                            eprintln!("UnsupportedRPC");
                             Err(NonRepeatableError(err.to_string()))
                         }
                         ProviderError::UnsupportedNodeClient => {
-                            eprintln!("UnsupportedNodeClient: {}", "UnsupportedNodeClient".to_string());
+                            eprintln!("UnsupportedNodeClient");
                             Err(NonRepeatableError(err.to_string()))
                         }
                         ProviderError::SignerUnavailable => {
-                            eprintln!("SignerUnavailable: {}", "SignerUnavailable".to_string());
+                            eprintln!("SignerUnavailable");
                             Err(NonRepeatableError(err.to_string()))
                         }
                     }
@@ -625,15 +625,15 @@ async fn execute_send(function_call: FunctionCall<Arc<SignerMiddleware<Provider<
                     Err(NonRepeatableError(message))
                 }
                 ContractError::DecodingError(err) => {
-                    eprintln!("DecodingError: {}",err.to_string());
+                    eprintln!("DecodingError: {}",err);
                     Err(NonRepeatableError(err.to_string()))
                 }
                 ContractError::AbiError(err) => {
-                    eprintln!("AbiError: {}",err.to_string());
+                    eprintln!("AbiError: {}",err);
                     Err(NonRepeatableError(err.to_string()))
                 }
                 ContractError::DetokenizationError(err) => {
-                    eprintln!("DetokenizationError: {}",err.to_string());
+                    eprintln!("DetokenizationError: {}",err);
                     Err(NonRepeatableError(err.to_string()))
                 }
                 ContractError::MiddlewareError { e } => {
@@ -645,11 +645,11 @@ async fn execute_send(function_call: FunctionCall<Arc<SignerMiddleware<Provider<
                     Err(NonRepeatableError(e.to_string()))
                 }
                 ContractError::ConstructorError => {
-                    eprintln!("{}", "ConstructorError".to_string());
+                    eprintln!("ConstructorError");
                     Err(NonRepeatableError(err.to_string()))
                 }
                 ContractError::ContractNotDeployed => {
-                    eprintln!("{}", "ContractNotDeployed".to_string());
+                    eprintln!("ContractNotDeployed");
                     Err(NonRepeatableError(err.to_string()))
                 }
             }
