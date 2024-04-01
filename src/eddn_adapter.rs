@@ -1,5 +1,5 @@
 use std::io;
-use std::io::{Read, Write};
+use std::io::Read;
 use std::sync::mpsc::Sender;
 use std::time::Duration;
 

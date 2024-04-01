@@ -1,4 +1,4 @@
-[
+ [
     {
       "inputs": [],
       "stateMutability": "nonpayable",
@@ -15,6 +15,71 @@
         }
       ],
       "name": "BodyRegistration",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "carrierID",
+          "type": "uint64"
+        }
+      ],
+      "name": "CarrierJump",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "carrierID",
+          "type": "uint64"
+        }
+      ],
+      "name": "CarrierJumpCancel",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "carrierID",
+          "type": "uint64"
+        }
+      ],
+      "name": "CarrierLocation",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "carrierID",
+          "type": "uint64"
+        }
+      ],
+      "name": "CarrierRegistration",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "carrierID",
+          "type": "uint64"
+        }
+      ],
+      "name": "CarrierUpdate",
       "type": "event"
     },
     {
@@ -42,6 +107,116 @@
       ],
       "name": "SystemRegistration",
       "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "carrierID",
+          "type": "uint64"
+        }
+      ],
+      "name": "cancel_carrier_jump",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "_carrierID",
+          "type": "uint64"
+        }
+      ],
+      "name": "carrierMap",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "registered",
+          "type": "bool"
+        },
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "callsign",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "services",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "docking_access",
+          "type": "string"
+        },
+        {
+          "internalType": "bool",
+          "name": "allow_notorious",
+          "type": "bool"
+        },
+        {
+          "internalType": "string",
+          "name": "system_b",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "body_b",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "system_a",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "body_a",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "carrierID",
+          "type": "uint64"
+        },
+        {
+          "internalType": "string",
+          "name": "system",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "body",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "emit_carrier_jump",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
     },
     {
       "inputs": [
@@ -398,6 +573,44 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "carrierID",
+          "type": "uint64"
+        },
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "callsign",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "services",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "docking_access",
+          "type": "string"
+        },
+        {
+          "internalType": "bool",
+          "name": "allow_notorious",
+          "type": "bool"
+        }
+      ],
+      "name": "registerCarrier",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -957,6 +1170,29 @@
         }
       ],
       "name": "registerSystem",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "carrierID",
+          "type": "uint64"
+        },
+        {
+          "internalType": "string",
+          "name": "system",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "body",
+          "type": "string"
+        }
+      ],
+      "name": "report_carrier_location",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
