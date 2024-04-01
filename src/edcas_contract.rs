@@ -40,6 +40,36 @@ pub mod edcas {
                     ],
                 ),
                 (
+                    ::std::borrow::ToOwned::to_owned("carrierIDs"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("carrierIDs"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
                     ::std::borrow::ToOwned::to_owned("carrierMap"),
                     ::std::vec![
                         ::ethers::core::abi::ethabi::Function {
@@ -183,32 +213,50 @@ pub mod edcas {
                     ],
                 ),
                 (
-                    ::std::borrow::ToOwned::to_owned("getId"),
+                    ::std::borrow::ToOwned::to_owned("get_carrier_ids"),
                     ::std::vec![
                         ::ethers::core::abi::ethabi::Function {
-                            name: ::std::borrow::ToOwned::to_owned("getId"),
-                            inputs: ::std::vec![
-                                ::ethers::core::abi::ethabi::Param {
-                                    name: ::std::borrow::ToOwned::to_owned("data"),
-                                    kind: ::ethers::core::abi::ethabi::ParamType::Bytes,
-                                    internal_type: ::core::option::Option::Some(
-                                        ::std::borrow::ToOwned::to_owned("bytes"),
-                                    ),
-                                },
-                            ],
+                            name: ::std::borrow::ToOwned::to_owned("get_carrier_ids"),
+                            inputs: ::std::vec![],
                             outputs: ::std::vec![
                                 ::ethers::core::abi::ethabi::Param {
                                     name: ::std::string::String::new(),
-                                    kind: ::ethers::core::abi::ethabi::ParamType::FixedBytes(
-                                        32usize,
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                        ),
                                     ),
                                     internal_type: ::core::option::Option::Some(
-                                        ::std::borrow::ToOwned::to_owned("bytes32"),
+                                        ::std::borrow::ToOwned::to_owned("uint64[]"),
                                     ),
                                 },
                             ],
                             constant: ::core::option::Option::None,
-                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::Pure,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("get_systems"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("get_systems"),
+                            inputs: ::std::vec![],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Array(
+                                        ::std::boxed::Box::new(
+                                            ::ethers::core::abi::ethabi::ParamType::String,
+                                        ),
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("string[]"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
                         },
                     ],
                 ),
@@ -442,13 +490,13 @@ pub mod edcas {
                     ],
                 ),
                 (
-                    ::std::borrow::ToOwned::to_owned("registerPlanet"),
+                    ::std::borrow::ToOwned::to_owned("register_planet"),
                     ::std::vec![
                         ::ethers::core::abi::ethabi::Function {
-                            name: ::std::borrow::ToOwned::to_owned("registerPlanet"),
+                            name: ::std::borrow::ToOwned::to_owned("register_planet"),
                             inputs: ::std::vec![
                                 ::ethers::core::abi::ethabi::Param {
-                                    name: ::std::borrow::ToOwned::to_owned("_address"),
+                                    name: ::std::borrow::ToOwned::to_owned("system_address"),
                                     kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
                                     internal_type: ::core::option::Option::Some(
                                         ::std::borrow::ToOwned::to_owned("uint64"),
@@ -606,10 +654,10 @@ pub mod edcas {
                     ],
                 ),
                 (
-                    ::std::borrow::ToOwned::to_owned("registerStar"),
+                    ::std::borrow::ToOwned::to_owned("register_star"),
                     ::std::vec![
                         ::ethers::core::abi::ethabi::Function {
-                            name: ::std::borrow::ToOwned::to_owned("registerStar"),
+                            name: ::std::borrow::ToOwned::to_owned("register_star"),
                             inputs: ::std::vec![
                                 ::ethers::core::abi::ethabi::Param {
                                     name: ::std::borrow::ToOwned::to_owned("_address"),
@@ -720,13 +768,13 @@ pub mod edcas {
                     ],
                 ),
                 (
-                    ::std::borrow::ToOwned::to_owned("registerSystem"),
+                    ::std::borrow::ToOwned::to_owned("register_system"),
                     ::std::vec![
                         ::ethers::core::abi::ethabi::Function {
-                            name: ::std::borrow::ToOwned::to_owned("registerSystem"),
+                            name: ::std::borrow::ToOwned::to_owned("register_system"),
                             inputs: ::std::vec![
                                 ::ethers::core::abi::ethabi::Param {
-                                    name: ::std::borrow::ToOwned::to_owned("_address"),
+                                    name: ::std::borrow::ToOwned::to_owned("system_address"),
                                     kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
                                     internal_type: ::core::option::Option::Some(
                                         ::std::borrow::ToOwned::to_owned("uint64"),
@@ -942,13 +990,41 @@ pub mod edcas {
                     ],
                 ),
                 (
+                    ::std::borrow::ToOwned::to_owned("systemIdMap"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("systemIdMap"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("systemName"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::String,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("string"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
                     ::std::borrow::ToOwned::to_owned("systemMap"),
                     ::std::vec![
                         ::ethers::core::abi::ethabi::Function {
                             name: ::std::borrow::ToOwned::to_owned("systemMap"),
                             inputs: ::std::vec![
                                 ::ethers::core::abi::ethabi::Param {
-                                    name: ::std::borrow::ToOwned::to_owned("_address"),
+                                    name: ::std::borrow::ToOwned::to_owned("systemAddress"),
                                     kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
                                     internal_type: ::core::option::Option::Some(
                                         ::std::borrow::ToOwned::to_owned("uint64"),
@@ -996,6 +1072,36 @@ pub mod edcas {
                                     kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
                                     internal_type: ::core::option::Option::Some(
                                         ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
+                    ::std::borrow::ToOwned::to_owned("systems"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("systems"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::String,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("string"),
                                     ),
                                 },
                             ],
@@ -1192,6 +1298,15 @@ pub mod edcas {
                 .method_hash([0, 150, 175, 220], carrier_id)
                 .expect("method not found (this should never happen)")
         }
+        ///Calls the contract's `carrierIDs` (0x4dc33122) function
+        pub fn carrier_i_ds(
+            &self,
+            p0: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, u64> {
+            self.0
+                .method_hash([77, 195, 49, 34], p0)
+                .expect("method not found (this should never happen)")
+        }
         ///Calls the contract's `carrierMap` (0x2c594e5b) function
         pub fn carrier_map(
             &self,
@@ -1228,13 +1343,23 @@ pub mod edcas {
                 .method_hash([6, 41, 78, 233], (carrier_id, system, body, timestamp))
                 .expect("method not found (this should never happen)")
         }
-        ///Calls the contract's `getId` (0x5a7873a2) function
-        pub fn get_id(
+        ///Calls the contract's `get_carrier_ids` (0x87bcf475) function
+        pub fn get_carrier_ids(
             &self,
-            data: ::ethers::core::types::Bytes,
-        ) -> ::ethers::contract::builders::ContractCall<M, [u8; 32]> {
+        ) -> ::ethers::contract::builders::ContractCall<M, ::std::vec::Vec<u64>> {
             self.0
-                .method_hash([90, 120, 115, 162], data)
+                .method_hash([135, 188, 244, 117], ())
+                .expect("method not found (this should never happen)")
+        }
+        ///Calls the contract's `get_systems` (0xbfea3a1e) function
+        pub fn get_systems(
+            &self,
+        ) -> ::ethers::contract::builders::ContractCall<
+            M,
+            ::std::vec::Vec<::std::string::String>,
+        > {
+            self.0
+                .method_hash([191, 234, 58, 30], ())
                 .expect("method not found (this should never happen)")
         }
         ///Calls the contract's `planetMap` (0x63544387) function
@@ -1274,10 +1399,10 @@ pub mod edcas {
                 )
                 .expect("method not found (this should never happen)")
         }
-        ///Calls the contract's `registerPlanet` (0x78bcb59f) function
+        ///Calls the contract's `register_planet` (0x6fc46103) function
         pub fn register_planet(
             &self,
-            address: u64,
+            system_address: u64,
             id: u8,
             name: ::std::string::String,
             discovered: bool,
@@ -1287,9 +1412,9 @@ pub mod edcas {
         ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [120, 188, 181, 159],
+                    [111, 196, 97, 3],
                     (
-                        address,
+                        system_address,
                         id,
                         name,
                         discovered,
@@ -1300,7 +1425,7 @@ pub mod edcas {
                 )
                 .expect("method not found (this should never happen)")
         }
-        ///Calls the contract's `registerStar` (0xb8c81825) function
+        ///Calls the contract's `register_star` (0xe7379b08) function
         pub fn register_star(
             &self,
             address: u64,
@@ -1313,7 +1438,7 @@ pub mod edcas {
         ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [184, 200, 24, 37],
+                    [231, 55, 155, 8],
                     (
                         address,
                         id,
@@ -1326,10 +1451,10 @@ pub mod edcas {
                 )
                 .expect("method not found (this should never happen)")
         }
-        ///Calls the contract's `registerSystem` (0x85a58f71) function
+        ///Calls the contract's `register_system` (0x8fcf0a0a) function
         pub fn register_system(
             &self,
-            address: u64,
+            system_address: u64,
             name: ::std::string::String,
             allegiance: ::std::string::String,
             economy: ::std::string::String,
@@ -1339,9 +1464,9 @@ pub mod edcas {
         ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [133, 165, 143, 113],
+                    [143, 207, 10, 10],
                     (
-                        address,
+                        system_address,
                         name,
                         allegiance,
                         economy,
@@ -1376,10 +1501,19 @@ pub mod edcas {
                 .method_hash([152, 203, 87, 0], (address, p1))
                 .expect("method not found (this should never happen)")
         }
+        ///Calls the contract's `systemIdMap` (0x01bbf489) function
+        pub fn system_id_map(
+            &self,
+            system_name: ::std::string::String,
+        ) -> ::ethers::contract::builders::ContractCall<M, u64> {
+            self.0
+                .method_hash([1, 187, 244, 137], system_name)
+                .expect("method not found (this should never happen)")
+        }
         ///Calls the contract's `systemMap` (0x8c7da46d) function
         pub fn system_map(
             &self,
-            address: u64,
+            system_address: u64,
         ) -> ::ethers::contract::builders::ContractCall<
             M,
             (
@@ -1392,7 +1526,16 @@ pub mod edcas {
             ),
         > {
             self.0
-                .method_hash([140, 125, 164, 109], address)
+                .method_hash([140, 125, 164, 109], system_address)
+                .expect("method not found (this should never happen)")
+        }
+        ///Calls the contract's `systems` (0x0ffca604) function
+        pub fn systems(
+            &self,
+            p0: ::ethers::core::types::U256,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::std::string::String> {
+            self.0
+                .method_hash([15, 252, 166, 4], p0)
                 .expect("method not found (this should never happen)")
         }
         ///Gets the contract's `BodyRegistration` event
@@ -1726,6 +1869,19 @@ pub mod edcas {
     pub struct CancelCarrierJumpCall {
         pub carrier_id: u64,
     }
+    ///Container type for all input parameters for the `carrierIDs` function with signature `carrierIDs(uint256)` and selector `0x4dc33122`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[ethcall(name = "carrierIDs", abi = "carrierIDs(uint256)")]
+    pub struct CarrierIDsCall(pub ::ethers::core::types::U256);
     ///Container type for all input parameters for the `carrierMap` function with signature `carrierMap(uint64)` and selector `0x2c594e5b`
     #[derive(
         Clone,
@@ -1762,7 +1918,7 @@ pub mod edcas {
         pub body: ::std::string::String,
         pub timestamp: ::ethers::core::types::U256,
     }
-    ///Container type for all input parameters for the `getId` function with signature `getId(bytes)` and selector `0x5a7873a2`
+    ///Container type for all input parameters for the `get_carrier_ids` function with signature `get_carrier_ids()` and selector `0x87bcf475`
     #[derive(
         Clone,
         ::ethers::contract::EthCall,
@@ -1773,10 +1929,21 @@ pub mod edcas {
         Eq,
         Hash
     )]
-    #[ethcall(name = "getId", abi = "getId(bytes)")]
-    pub struct GetIdCall {
-        pub data: ::ethers::core::types::Bytes,
-    }
+    #[ethcall(name = "get_carrier_ids", abi = "get_carrier_ids()")]
+    pub struct GetCarrierIdsCall;
+    ///Container type for all input parameters for the `get_systems` function with signature `get_systems()` and selector `0xbfea3a1e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[ethcall(name = "get_systems", abi = "get_systems()")]
+    pub struct GetSystemsCall;
     ///Container type for all input parameters for the `planetMap` function with signature `planetMap(uint64,uint256)` and selector `0x63544387`
     #[derive(
         Clone,
@@ -1816,14 +1983,14 @@ pub mod edcas {
         pub docking_access: ::std::string::String,
         pub allow_notorious: bool,
     }
-    ///Container type for all input parameters for the `registerPlanet` function with signature `registerPlanet(uint64,uint8,string,bool,bool,(string,string,bool,string,string,bool,(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))` and selector `0x78bcb59f`
+    ///Container type for all input parameters for the `register_planet` function with signature `register_planet(uint64,uint8,string,bool,bool,(string,string,bool,string,string,bool,(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))` and selector `0x6fc46103`
     #[derive(Clone, ::ethers::contract::EthCall, ::ethers::contract::EthDisplay)]
     #[ethcall(
-        name = "registerPlanet",
-        abi = "registerPlanet(uint64,uint8,string,bool,bool,(string,string,bool,string,string,bool,(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))"
+        name = "register_planet",
+        abi = "register_planet(uint64,uint8,string,bool,bool,(string,string,bool,string,string,bool,(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))"
     )]
     pub struct RegisterPlanetCall {
-        pub address: u64,
+        pub system_address: u64,
         pub id: u8,
         pub name: ::std::string::String,
         pub discovered: bool,
@@ -1831,7 +1998,7 @@ pub mod edcas {
         pub planet_properties: PlanetProperties,
         pub body_properties: BodyProperties,
     }
-    ///Container type for all input parameters for the `registerStar` function with signature `registerStar(uint64,uint8,string,bool,bool,(uint8,uint16,string,string,(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))` and selector `0xb8c81825`
+    ///Container type for all input parameters for the `register_star` function with signature `register_star(uint64,uint8,string,bool,bool,(uint8,uint16,string,string,(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))` and selector `0xe7379b08`
     #[derive(
         Clone,
         ::ethers::contract::EthCall,
@@ -1843,8 +2010,8 @@ pub mod edcas {
         Hash
     )]
     #[ethcall(
-        name = "registerStar",
-        abi = "registerStar(uint64,uint8,string,bool,bool,(uint8,uint16,string,string,(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))"
+        name = "register_star",
+        abi = "register_star(uint64,uint8,string,bool,bool,(uint8,uint16,string,string,(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))"
     )]
     pub struct RegisterStarCall {
         pub address: u64,
@@ -1855,7 +2022,7 @@ pub mod edcas {
         pub star_properties: StarProperties,
         pub body_properties: BodyProperties,
     }
-    ///Container type for all input parameters for the `registerSystem` function with signature `registerSystem(uint64,string,string,string,string,string,uint64)` and selector `0x85a58f71`
+    ///Container type for all input parameters for the `register_system` function with signature `register_system(uint64,string,string,string,string,string,uint64)` and selector `0x8fcf0a0a`
     #[derive(
         Clone,
         ::ethers::contract::EthCall,
@@ -1867,11 +2034,11 @@ pub mod edcas {
         Hash
     )]
     #[ethcall(
-        name = "registerSystem",
-        abi = "registerSystem(uint64,string,string,string,string,string,uint64)"
+        name = "register_system",
+        abi = "register_system(uint64,string,string,string,string,string,uint64)"
     )]
     pub struct RegisterSystemCall {
-        pub address: u64,
+        pub system_address: u64,
         pub name: ::std::string::String,
         pub allegiance: ::std::string::String,
         pub economy: ::std::string::String,
@@ -1915,6 +2082,21 @@ pub mod edcas {
         pub address: u64,
         pub p1: ::ethers::core::types::U256,
     }
+    ///Container type for all input parameters for the `systemIdMap` function with signature `systemIdMap(string)` and selector `0x01bbf489`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[ethcall(name = "systemIdMap", abi = "systemIdMap(string)")]
+    pub struct SystemIdMapCall {
+        pub system_name: ::std::string::String,
+    }
     ///Container type for all input parameters for the `systemMap` function with signature `systemMap(uint64)` and selector `0x8c7da46d`
     #[derive(
         Clone,
@@ -1928,15 +2110,30 @@ pub mod edcas {
     )]
     #[ethcall(name = "systemMap", abi = "systemMap(uint64)")]
     pub struct SystemMapCall {
-        pub address: u64,
+        pub system_address: u64,
     }
+    ///Container type for all input parameters for the `systems` function with signature `systems(uint256)` and selector `0x0ffca604`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[ethcall(name = "systems", abi = "systems(uint256)")]
+    pub struct SystemsCall(pub ::ethers::core::types::U256);
     ///Container type for all of the contract's call
     #[derive(Clone, ::ethers::contract::EthAbiType)]
     pub enum EDCASCalls {
         CancelCarrierJump(CancelCarrierJumpCall),
+        CarrierIDs(CarrierIDsCall),
         CarrierMap(CarrierMapCall),
         EmitCarrierJump(EmitCarrierJumpCall),
-        GetId(GetIdCall),
+        GetCarrierIds(GetCarrierIdsCall),
+        GetSystems(GetSystemsCall),
         PlanetMap(PlanetMapCall),
         RegisterCarrier(RegisterCarrierCall),
         RegisterPlanet(RegisterPlanetCall),
@@ -1944,7 +2141,9 @@ pub mod edcas {
         RegisterSystem(RegisterSystemCall),
         ReportCarrierLocation(ReportCarrierLocationCall),
         StarMap(StarMapCall),
+        SystemIdMap(SystemIdMapCall),
         SystemMap(SystemMapCall),
+        Systems(SystemsCall),
     }
     impl ::ethers::core::abi::AbiDecode for EDCASCalls {
         fn decode(
@@ -1956,6 +2155,11 @@ pub mod edcas {
             ) {
                 return Ok(Self::CancelCarrierJump(decoded));
             }
+            if let Ok(decoded) = <CarrierIDsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::CarrierIDs(decoded));
+            }
             if let Ok(decoded) = <CarrierMapCall as ::ethers::core::abi::AbiDecode>::decode(
                 data,
             ) {
@@ -1966,10 +2170,15 @@ pub mod edcas {
             ) {
                 return Ok(Self::EmitCarrierJump(decoded));
             }
-            if let Ok(decoded) = <GetIdCall as ::ethers::core::abi::AbiDecode>::decode(
+            if let Ok(decoded) = <GetCarrierIdsCall as ::ethers::core::abi::AbiDecode>::decode(
                 data,
             ) {
-                return Ok(Self::GetId(decoded));
+                return Ok(Self::GetCarrierIds(decoded));
+            }
+            if let Ok(decoded) = <GetSystemsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::GetSystems(decoded));
             }
             if let Ok(decoded) = <PlanetMapCall as ::ethers::core::abi::AbiDecode>::decode(
                 data,
@@ -2006,10 +2215,20 @@ pub mod edcas {
             ) {
                 return Ok(Self::StarMap(decoded));
             }
+            if let Ok(decoded) = <SystemIdMapCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::SystemIdMap(decoded));
+            }
             if let Ok(decoded) = <SystemMapCall as ::ethers::core::abi::AbiDecode>::decode(
                 data,
             ) {
                 return Ok(Self::SystemMap(decoded));
+            }
+            if let Ok(decoded) = <SystemsCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::Systems(decoded));
             }
             Err(::ethers::core::abi::Error::InvalidData.into())
         }
@@ -2020,13 +2239,21 @@ pub mod edcas {
                 Self::CancelCarrierJump(element) => {
                     ::ethers::core::abi::AbiEncode::encode(element)
                 }
+                Self::CarrierIDs(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
                 Self::CarrierMap(element) => {
                     ::ethers::core::abi::AbiEncode::encode(element)
                 }
                 Self::EmitCarrierJump(element) => {
                     ::ethers::core::abi::AbiEncode::encode(element)
                 }
-                Self::GetId(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::GetCarrierIds(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
+                Self::GetSystems(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
                 Self::PlanetMap(element) => {
                     ::ethers::core::abi::AbiEncode::encode(element)
                 }
@@ -2046,9 +2273,13 @@ pub mod edcas {
                     ::ethers::core::abi::AbiEncode::encode(element)
                 }
                 Self::StarMap(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::SystemIdMap(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
                 Self::SystemMap(element) => {
                     ::ethers::core::abi::AbiEncode::encode(element)
                 }
+                Self::Systems(element) => ::ethers::core::abi::AbiEncode::encode(element),
             }
         }
     }
@@ -2056,9 +2287,11 @@ pub mod edcas {
         fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
             match self {
                 Self::CancelCarrierJump(element) => ::core::fmt::Display::fmt(element, f),
+                Self::CarrierIDs(element) => ::core::fmt::Display::fmt(element, f),
                 Self::CarrierMap(element) => ::core::fmt::Display::fmt(element, f),
                 Self::EmitCarrierJump(element) => ::core::fmt::Display::fmt(element, f),
-                Self::GetId(element) => ::core::fmt::Display::fmt(element, f),
+                Self::GetCarrierIds(element) => ::core::fmt::Display::fmt(element, f),
+                Self::GetSystems(element) => ::core::fmt::Display::fmt(element, f),
                 Self::PlanetMap(element) => ::core::fmt::Display::fmt(element, f),
                 Self::RegisterCarrier(element) => ::core::fmt::Display::fmt(element, f),
                 Self::RegisterPlanet(element) => ::core::fmt::Display::fmt(element, f),
@@ -2068,13 +2301,20 @@ pub mod edcas {
                     ::core::fmt::Display::fmt(element, f)
                 }
                 Self::StarMap(element) => ::core::fmt::Display::fmt(element, f),
+                Self::SystemIdMap(element) => ::core::fmt::Display::fmt(element, f),
                 Self::SystemMap(element) => ::core::fmt::Display::fmt(element, f),
+                Self::Systems(element) => ::core::fmt::Display::fmt(element, f),
             }
         }
     }
     impl ::core::convert::From<CancelCarrierJumpCall> for EDCASCalls {
         fn from(value: CancelCarrierJumpCall) -> Self {
             Self::CancelCarrierJump(value)
+        }
+    }
+    impl ::core::convert::From<CarrierIDsCall> for EDCASCalls {
+        fn from(value: CarrierIDsCall) -> Self {
+            Self::CarrierIDs(value)
         }
     }
     impl ::core::convert::From<CarrierMapCall> for EDCASCalls {
@@ -2087,9 +2327,14 @@ pub mod edcas {
             Self::EmitCarrierJump(value)
         }
     }
-    impl ::core::convert::From<GetIdCall> for EDCASCalls {
-        fn from(value: GetIdCall) -> Self {
-            Self::GetId(value)
+    impl ::core::convert::From<GetCarrierIdsCall> for EDCASCalls {
+        fn from(value: GetCarrierIdsCall) -> Self {
+            Self::GetCarrierIds(value)
+        }
+    }
+    impl ::core::convert::From<GetSystemsCall> for EDCASCalls {
+        fn from(value: GetSystemsCall) -> Self {
+            Self::GetSystems(value)
         }
     }
     impl ::core::convert::From<PlanetMapCall> for EDCASCalls {
@@ -2127,11 +2372,33 @@ pub mod edcas {
             Self::StarMap(value)
         }
     }
+    impl ::core::convert::From<SystemIdMapCall> for EDCASCalls {
+        fn from(value: SystemIdMapCall) -> Self {
+            Self::SystemIdMap(value)
+        }
+    }
     impl ::core::convert::From<SystemMapCall> for EDCASCalls {
         fn from(value: SystemMapCall) -> Self {
             Self::SystemMap(value)
         }
     }
+    impl ::core::convert::From<SystemsCall> for EDCASCalls {
+        fn from(value: SystemsCall) -> Self {
+            Self::Systems(value)
+        }
+    }
+    ///Container type for all return fields from the `carrierIDs` function with signature `carrierIDs(uint256)` and selector `0x4dc33122`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct CarrierIDsReturn(pub u64);
     ///Container type for all return fields from the `carrierMap` function with signature `carrierMap(uint64)` and selector `0x2c594e5b`
     #[derive(
         Clone,
@@ -2156,7 +2423,7 @@ pub mod edcas {
         pub body_a: ::std::string::String,
         pub timestamp: ::ethers::core::types::U256,
     }
-    ///Container type for all return fields from the `getId` function with signature `getId(bytes)` and selector `0x5a7873a2`
+    ///Container type for all return fields from the `get_carrier_ids` function with signature `get_carrier_ids()` and selector `0x87bcf475`
     #[derive(
         Clone,
         ::ethers::contract::EthAbiType,
@@ -2167,7 +2434,19 @@ pub mod edcas {
         Eq,
         Hash
     )]
-    pub struct GetIdReturn(pub [u8; 32]);
+    pub struct GetCarrierIdsReturn(pub ::std::vec::Vec<u64>);
+    ///Container type for all return fields from the `get_systems` function with signature `get_systems()` and selector `0xbfea3a1e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct GetSystemsReturn(pub ::std::vec::Vec<::std::string::String>);
     ///Container type for all return fields from the `planetMap` function with signature `planetMap(uint64,uint256)` and selector `0x63544387`
     #[derive(Clone, ::ethers::contract::EthAbiType, ::ethers::contract::EthAbiCodec)]
     pub struct PlanetMapReturn {
@@ -2197,6 +2476,18 @@ pub mod edcas {
         pub star_properties: StarProperties,
         pub body_properties: BodyProperties,
     }
+    ///Container type for all return fields from the `systemIdMap` function with signature `systemIdMap(string)` and selector `0x01bbf489`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct SystemIdMapReturn(pub u64);
     ///Container type for all return fields from the `systemMap` function with signature `systemMap(uint64)` and selector `0x8c7da46d`
     #[derive(
         Clone,
@@ -2216,6 +2507,18 @@ pub mod edcas {
         pub security: ::std::string::String,
         pub population: u64,
     }
+    ///Container type for all return fields from the `systems` function with signature `systems(uint256)` and selector `0x0ffca604`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct SystemsReturn(pub ::std::string::String);
     ///`BodyProperties((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8))`
     #[derive(
         Clone,
