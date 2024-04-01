@@ -92,6 +92,15 @@ pub mod edcas {
                                     ),
                                 },
                                 ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
+                                ::ethers::core::abi::ethabi::Param {
                                     name: ::std::borrow::ToOwned::to_owned("name"),
                                     kind: ::ethers::core::abi::ethabi::ParamType::String,
                                     internal_type: ::core::option::Option::Some(
@@ -155,7 +164,7 @@ pub mod edcas {
                                     ),
                                 },
                                 ::ethers::core::abi::ethabi::Param {
-                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    name: ::std::borrow::ToOwned::to_owned("jump_timestamp"),
                                     kind: ::ethers::core::abi::ethabi::ParamType::Uint(
                                         256usize,
                                     ),
@@ -197,7 +206,7 @@ pub mod edcas {
                                     ),
                                 },
                                 ::ethers::core::abi::ethabi::Param {
-                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    name: ::std::borrow::ToOwned::to_owned("jump_timestamp"),
                                     kind: ::ethers::core::abi::ethabi::ParamType::Uint(
                                         256usize,
                                     ),
@@ -284,6 +293,15 @@ pub mod edcas {
                                 },
                             ],
                             outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
                                 ::ethers::core::abi::ethabi::Param {
                                     name: ::std::borrow::ToOwned::to_owned("id"),
                                     kind: ::ethers::core::abi::ethabi::ParamType::Uint(8usize),
@@ -482,6 +500,15 @@ pub mod edcas {
                                         ::std::borrow::ToOwned::to_owned("bool"),
                                     ),
                                 },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
                             ],
                             outputs: ::std::vec![],
                             constant: ::core::option::Option::None,
@@ -646,6 +673,15 @@ pub mod edcas {
                                         ::std::borrow::ToOwned::to_owned("struct BodyProperties"),
                                     ),
                                 },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
                             ],
                             outputs: ::std::vec![],
                             constant: ::core::option::Option::None,
@@ -660,7 +696,7 @@ pub mod edcas {
                             name: ::std::borrow::ToOwned::to_owned("register_star"),
                             inputs: ::std::vec![
                                 ::ethers::core::abi::ethabi::Param {
-                                    name: ::std::borrow::ToOwned::to_owned("_address"),
+                                    name: ::std::borrow::ToOwned::to_owned("system_address"),
                                     kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
                                     internal_type: ::core::option::Option::Some(
                                         ::std::borrow::ToOwned::to_owned("uint64"),
@@ -760,6 +796,15 @@ pub mod edcas {
                                         ::std::borrow::ToOwned::to_owned("struct BodyProperties"),
                                     ),
                                 },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
                             ],
                             outputs: ::std::vec![],
                             constant: ::core::option::Option::None,
@@ -822,6 +867,15 @@ pub mod edcas {
                                         ::std::borrow::ToOwned::to_owned("uint64"),
                                     ),
                                 },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
                             ],
                             outputs: ::std::vec![],
                             constant: ::core::option::Option::None,
@@ -858,6 +912,15 @@ pub mod edcas {
                                         ::std::borrow::ToOwned::to_owned("string"),
                                     ),
                                 },
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
                             ],
                             outputs: ::std::vec![],
                             constant: ::core::option::Option::None,
@@ -889,6 +952,15 @@ pub mod edcas {
                                 },
                             ],
                             outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
                                 ::ethers::core::abi::ethabi::Param {
                                     name: ::std::borrow::ToOwned::to_owned("id"),
                                     kind: ::ethers::core::abi::ethabi::ParamType::Uint(8usize),
@@ -1032,6 +1104,15 @@ pub mod edcas {
                                 },
                             ],
                             outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("timestamp"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(
+                                        256usize,
+                                    ),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint256"),
+                                    ),
+                                },
                                 ::ethers::core::abi::ethabi::Param {
                                     name: ::std::borrow::ToOwned::to_owned("name"),
                                     kind: ::ethers::core::abi::ethabi::ParamType::String,
@@ -1315,6 +1396,7 @@ pub mod edcas {
             M,
             (
                 bool,
+                ::ethers::core::types::U256,
                 ::std::string::String,
                 ::std::string::String,
                 ::std::string::String,
@@ -1337,10 +1419,13 @@ pub mod edcas {
             carrier_id: u64,
             system: ::std::string::String,
             body: ::std::string::String,
-            timestamp: ::ethers::core::types::U256,
+            jump_timestamp: ::ethers::core::types::U256,
         ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([6, 41, 78, 233], (carrier_id, system, body, timestamp))
+                .method_hash(
+                    [6, 41, 78, 233],
+                    (carrier_id, system, body, jump_timestamp),
+                )
                 .expect("method not found (this should never happen)")
         }
         ///Calls the contract's `get_carrier_ids` (0x87bcf475) function
@@ -1369,13 +1454,21 @@ pub mod edcas {
             p1: ::ethers::core::types::U256,
         ) -> ::ethers::contract::builders::ContractCall<
             M,
-            (u8, ::std::string::String, bool, bool, PlanetProperties, BodyProperties),
+            (
+                ::ethers::core::types::U256,
+                u8,
+                ::std::string::String,
+                bool,
+                bool,
+                PlanetProperties,
+                BodyProperties,
+            ),
         > {
             self.0
                 .method_hash([99, 84, 67, 135], (address, p1))
                 .expect("method not found (this should never happen)")
         }
-        ///Calls the contract's `registerCarrier` (0x563a8484) function
+        ///Calls the contract's `registerCarrier` (0x73047f73) function
         pub fn register_carrier(
             &self,
             carrier_id: u64,
@@ -1384,10 +1477,11 @@ pub mod edcas {
             services: ::std::string::String,
             docking_access: ::std::string::String,
             allow_notorious: bool,
+            timestamp: ::ethers::core::types::U256,
         ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [86, 58, 132, 132],
+                    [115, 4, 127, 115],
                     (
                         carrier_id,
                         name,
@@ -1395,11 +1489,12 @@ pub mod edcas {
                         services,
                         docking_access,
                         allow_notorious,
+                        timestamp,
                     ),
                 )
                 .expect("method not found (this should never happen)")
         }
-        ///Calls the contract's `register_planet` (0x6fc46103) function
+        ///Calls the contract's `register_planet` (0x6b037f4e) function
         pub fn register_planet(
             &self,
             system_address: u64,
@@ -1409,10 +1504,11 @@ pub mod edcas {
             mapped: bool,
             planet_properties: PlanetProperties,
             body_properties: BodyProperties,
+            timestamp: ::ethers::core::types::U256,
         ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [111, 196, 97, 3],
+                    [107, 3, 127, 78],
                     (
                         system_address,
                         id,
@@ -1421,37 +1517,40 @@ pub mod edcas {
                         mapped,
                         planet_properties,
                         body_properties,
+                        timestamp,
                     ),
                 )
                 .expect("method not found (this should never happen)")
         }
-        ///Calls the contract's `register_star` (0xe7379b08) function
+        ///Calls the contract's `register_star` (0x44143959) function
         pub fn register_star(
             &self,
-            address: u64,
+            system_address: u64,
             id: u8,
             name: ::std::string::String,
             discovered: bool,
             mapped: bool,
             star_properties: StarProperties,
             body_properties: BodyProperties,
+            timestamp: ::ethers::core::types::U256,
         ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [231, 55, 155, 8],
+                    [68, 20, 57, 89],
                     (
-                        address,
+                        system_address,
                         id,
                         name,
                         discovered,
                         mapped,
                         star_properties,
                         body_properties,
+                        timestamp,
                     ),
                 )
                 .expect("method not found (this should never happen)")
         }
-        ///Calls the contract's `register_system` (0x8fcf0a0a) function
+        ///Calls the contract's `register_system` (0x441f1e88) function
         pub fn register_system(
             &self,
             system_address: u64,
@@ -1461,10 +1560,11 @@ pub mod edcas {
             second_economy: ::std::string::String,
             security: ::std::string::String,
             population: u64,
+            timestamp: ::ethers::core::types::U256,
         ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
                 .method_hash(
-                    [143, 207, 10, 10],
+                    [68, 31, 30, 136],
                     (
                         system_address,
                         name,
@@ -1473,19 +1573,21 @@ pub mod edcas {
                         second_economy,
                         security,
                         population,
+                        timestamp,
                     ),
                 )
                 .expect("method not found (this should never happen)")
         }
-        ///Calls the contract's `report_carrier_location` (0xeca391e9) function
+        ///Calls the contract's `report_carrier_location` (0x101c8d0d) function
         pub fn report_carrier_location(
             &self,
             carrier_id: u64,
             system: ::std::string::String,
             body: ::std::string::String,
+            timestamp: ::ethers::core::types::U256,
         ) -> ::ethers::contract::builders::ContractCall<M, ()> {
             self.0
-                .method_hash([236, 163, 145, 233], (carrier_id, system, body))
+                .method_hash([16, 28, 141, 13], (carrier_id, system, body, timestamp))
                 .expect("method not found (this should never happen)")
         }
         ///Calls the contract's `starMap` (0x98cb5700) function
@@ -1495,7 +1597,15 @@ pub mod edcas {
             p1: ::ethers::core::types::U256,
         ) -> ::ethers::contract::builders::ContractCall<
             M,
-            (u8, ::std::string::String, bool, bool, StarProperties, BodyProperties),
+            (
+                ::ethers::core::types::U256,
+                u8,
+                ::std::string::String,
+                bool,
+                bool,
+                StarProperties,
+                BodyProperties,
+            ),
         > {
             self.0
                 .method_hash([152, 203, 87, 0], (address, p1))
@@ -1517,6 +1627,7 @@ pub mod edcas {
         ) -> ::ethers::contract::builders::ContractCall<
             M,
             (
+                ::ethers::core::types::U256,
                 ::std::string::String,
                 ::std::string::String,
                 ::std::string::String,
@@ -1916,7 +2027,7 @@ pub mod edcas {
         pub carrier_id: u64,
         pub system: ::std::string::String,
         pub body: ::std::string::String,
-        pub timestamp: ::ethers::core::types::U256,
+        pub jump_timestamp: ::ethers::core::types::U256,
     }
     ///Container type for all input parameters for the `get_carrier_ids` function with signature `get_carrier_ids()` and selector `0x87bcf475`
     #[derive(
@@ -1960,7 +2071,7 @@ pub mod edcas {
         pub address: u64,
         pub p1: ::ethers::core::types::U256,
     }
-    ///Container type for all input parameters for the `registerCarrier` function with signature `registerCarrier(uint64,string,string,string,string,bool)` and selector `0x563a8484`
+    ///Container type for all input parameters for the `registerCarrier` function with signature `registerCarrier(uint64,string,string,string,string,bool,uint256)` and selector `0x73047f73`
     #[derive(
         Clone,
         ::ethers::contract::EthCall,
@@ -1973,7 +2084,7 @@ pub mod edcas {
     )]
     #[ethcall(
         name = "registerCarrier",
-        abi = "registerCarrier(uint64,string,string,string,string,bool)"
+        abi = "registerCarrier(uint64,string,string,string,string,bool,uint256)"
     )]
     pub struct RegisterCarrierCall {
         pub carrier_id: u64,
@@ -1982,12 +2093,13 @@ pub mod edcas {
         pub services: ::std::string::String,
         pub docking_access: ::std::string::String,
         pub allow_notorious: bool,
+        pub timestamp: ::ethers::core::types::U256,
     }
-    ///Container type for all input parameters for the `register_planet` function with signature `register_planet(uint64,uint8,string,bool,bool,(string,string,bool,string,string,bool,(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))` and selector `0x6fc46103`
+    ///Container type for all input parameters for the `register_planet` function with signature `register_planet(uint64,uint8,string,bool,bool,(string,string,bool,string,string,bool,(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),uint256)` and selector `0x6b037f4e`
     #[derive(Clone, ::ethers::contract::EthCall, ::ethers::contract::EthDisplay)]
     #[ethcall(
         name = "register_planet",
-        abi = "register_planet(uint64,uint8,string,bool,bool,(string,string,bool,string,string,bool,(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))"
+        abi = "register_planet(uint64,uint8,string,bool,bool,(string,string,bool,string,string,bool,(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),uint256)"
     )]
     pub struct RegisterPlanetCall {
         pub system_address: u64,
@@ -1997,8 +2109,9 @@ pub mod edcas {
         pub mapped: bool,
         pub planet_properties: PlanetProperties,
         pub body_properties: BodyProperties,
+        pub timestamp: ::ethers::core::types::U256,
     }
-    ///Container type for all input parameters for the `register_star` function with signature `register_star(uint64,uint8,string,bool,bool,(uint8,uint16,string,string,(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))` and selector `0xe7379b08`
+    ///Container type for all input parameters for the `register_star` function with signature `register_star(uint64,uint8,string,bool,bool,(uint8,uint16,string,string,(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),uint256)` and selector `0x44143959`
     #[derive(
         Clone,
         ::ethers::contract::EthCall,
@@ -2011,18 +2124,19 @@ pub mod edcas {
     )]
     #[ethcall(
         name = "register_star",
-        abi = "register_star(uint64,uint8,string,bool,bool,(uint8,uint16,string,string,(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)))"
+        abi = "register_star(uint64,uint8,string,bool,bool,(uint8,uint16,string,string,(int128,uint8),(int128,uint8)),((int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8),(int128,uint8)),uint256)"
     )]
     pub struct RegisterStarCall {
-        pub address: u64,
+        pub system_address: u64,
         pub id: u8,
         pub name: ::std::string::String,
         pub discovered: bool,
         pub mapped: bool,
         pub star_properties: StarProperties,
         pub body_properties: BodyProperties,
+        pub timestamp: ::ethers::core::types::U256,
     }
-    ///Container type for all input parameters for the `register_system` function with signature `register_system(uint64,string,string,string,string,string,uint64)` and selector `0x8fcf0a0a`
+    ///Container type for all input parameters for the `register_system` function with signature `register_system(uint64,string,string,string,string,string,uint64,uint256)` and selector `0x441f1e88`
     #[derive(
         Clone,
         ::ethers::contract::EthCall,
@@ -2035,7 +2149,7 @@ pub mod edcas {
     )]
     #[ethcall(
         name = "register_system",
-        abi = "register_system(uint64,string,string,string,string,string,uint64)"
+        abi = "register_system(uint64,string,string,string,string,string,uint64,uint256)"
     )]
     pub struct RegisterSystemCall {
         pub system_address: u64,
@@ -2045,8 +2159,9 @@ pub mod edcas {
         pub second_economy: ::std::string::String,
         pub security: ::std::string::String,
         pub population: u64,
+        pub timestamp: ::ethers::core::types::U256,
     }
-    ///Container type for all input parameters for the `report_carrier_location` function with signature `report_carrier_location(uint64,string,string)` and selector `0xeca391e9`
+    ///Container type for all input parameters for the `report_carrier_location` function with signature `report_carrier_location(uint64,string,string,uint256)` and selector `0x101c8d0d`
     #[derive(
         Clone,
         ::ethers::contract::EthCall,
@@ -2059,12 +2174,13 @@ pub mod edcas {
     )]
     #[ethcall(
         name = "report_carrier_location",
-        abi = "report_carrier_location(uint64,string,string)"
+        abi = "report_carrier_location(uint64,string,string,uint256)"
     )]
     pub struct ReportCarrierLocationCall {
         pub carrier_id: u64,
         pub system: ::std::string::String,
         pub body: ::std::string::String,
+        pub timestamp: ::ethers::core::types::U256,
     }
     ///Container type for all input parameters for the `starMap` function with signature `starMap(uint64,uint256)` and selector `0x98cb5700`
     #[derive(
@@ -2412,6 +2528,7 @@ pub mod edcas {
     )]
     pub struct CarrierMapReturn {
         pub registered: bool,
+        pub timestamp: ::ethers::core::types::U256,
         pub name: ::std::string::String,
         pub callsign: ::std::string::String,
         pub services: ::std::string::String,
@@ -2421,7 +2538,7 @@ pub mod edcas {
         pub body_b: ::std::string::String,
         pub system_a: ::std::string::String,
         pub body_a: ::std::string::String,
-        pub timestamp: ::ethers::core::types::U256,
+        pub jump_timestamp: ::ethers::core::types::U256,
     }
     ///Container type for all return fields from the `get_carrier_ids` function with signature `get_carrier_ids()` and selector `0x87bcf475`
     #[derive(
@@ -2450,6 +2567,7 @@ pub mod edcas {
     ///Container type for all return fields from the `planetMap` function with signature `planetMap(uint64,uint256)` and selector `0x63544387`
     #[derive(Clone, ::ethers::contract::EthAbiType, ::ethers::contract::EthAbiCodec)]
     pub struct PlanetMapReturn {
+        pub timestamp: ::ethers::core::types::U256,
         pub id: u8,
         pub name: ::std::string::String,
         pub discovered: bool,
@@ -2469,6 +2587,7 @@ pub mod edcas {
         Hash
     )]
     pub struct StarMapReturn {
+        pub timestamp: ::ethers::core::types::U256,
         pub id: u8,
         pub name: ::std::string::String,
         pub discovered: bool,
@@ -2500,6 +2619,7 @@ pub mod edcas {
         Hash
     )]
     pub struct SystemMapReturn {
+        pub timestamp: ::ethers::core::types::U256,
         pub name: ::std::string::String,
         pub allegiance: ::std::string::String,
         pub economy: ::std::string::String,

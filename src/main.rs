@@ -166,7 +166,13 @@ fn interpret_event(json: JsonValue) {
                                     json["WasDiscovered"].as_bool().unwrap(),
                                     json["WasMapped"].as_bool().unwrap(),
                                     extract_planet_properties(&json),
-                                    extract_body_properties(&json)
+                                    extract_body_properties(&json),
+                                    DateTime::parse_from_rfc3339(
+                                        json["timestamp"].as_str().unwrap(),
+                                    )
+                                        .unwrap()
+                                        .timestamp()
+                                        .into()
                                 );
                                 execute_send_repeatable(function_call).await;
                             }else {
@@ -187,7 +193,13 @@ fn interpret_event(json: JsonValue) {
                                     json["WasDiscovered"].as_bool().unwrap(),
                                     json["WasMapped"].as_bool().unwrap(),
                                     extract_star_properties(&json),
-                                    extract_body_properties(&json)
+                                    extract_body_properties(&json),
+                                    DateTime::parse_from_rfc3339(
+                                        json["timestamp"].as_str().unwrap(),
+                                    )
+                                        .unwrap()
+                                        .timestamp()
+                                        .into()
                                 );
                                 execute_send_repeatable(function_call).await;
                             }
@@ -423,7 +435,13 @@ fn interpret_event(json: JsonValue) {
                             json["Callsign"].as_str().unwrap().to_string(),
                             "".to_string(),
                             "".to_string(),
-                            false
+                            false,
+                            DateTime::parse_from_rfc3339(
+                                json["timestamp"].as_str().unwrap(),
+                            )
+                                .unwrap()
+                                .timestamp()
+                                .into()
                         );
                         //execute_send(function_call).await;
                         execute_send_repeatable(function_call).await;
@@ -474,7 +492,13 @@ fn interpret_event(json: JsonValue) {
                             json["Callsign"].as_str().unwrap().to_string(),
                             services,
                             json["DockingAccess"].as_str().unwrap().to_string(),
-                            json["AllowNotorious"].as_bool().unwrap()
+                            json["AllowNotorious"].as_bool().unwrap(),
+                            DateTime::parse_from_rfc3339(
+                                json["timestamp"].as_str().unwrap(),
+                            )
+                                .unwrap()
+                                .timestamp()
+                                .into()
                         );
                         //execute_send(function_call).await;
                         execute_send_repeatable(function_call).await;
@@ -602,7 +626,13 @@ fn process_jump(json: JsonValue) {
                     json["SystemEconomy"].to_string(),
                     json["SystemSecondEconomy"].to_string(),
                     json["SystemSecurity"].to_string(),
-                    json["Population"].as_u64().unwrap_or(0)
+                    json["Population"].as_u64().unwrap_or(0),
+                    DateTime::parse_from_rfc3339(
+                        json["timestamp"].as_str().unwrap(),
+                    )
+                        .unwrap()
+                        .timestamp()
+                        .into()
                 );
                 //execute_send(function_call).await;
                 execute_send_repeatable(function_call).await;
