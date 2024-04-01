@@ -1,6 +1,7 @@
 use std::sync::mpsc::channel;
 use std::sync::Arc;
 use std::{env, thread};
+use std::io::BufRead;
 use std::time::Duration;
 use chrono::DateTime;
 
@@ -875,12 +876,9 @@ async fn get_contract() -> edcas_contract::EDCAS<SignerMiddleware<Provider<Http>
 }
 
 fn get_revert_message(bytes: Bytes) -> String {
-    match hex::encode(&bytes).as_str() { 
-        "08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001953797374656d206e6f7420726567697374657265642079657400000000000000" => {
-            String::from("System not registered yet")
-        }
-        &_ => {
-            hex::encode(&bytes)
-        } 
-    }
+    let n = bytes.split_at(134/2).1;
+    let n:&[u8] = n.split(|b|{
+        *b == 0u8
+    }).next().unwrap();
+    String::from_utf8(n.to_vec()).unwrap()
 }
