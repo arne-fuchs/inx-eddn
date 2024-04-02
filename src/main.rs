@@ -1,14 +1,13 @@
 use std::sync::mpsc::channel;
 use std::sync::Arc;
 use std::{env, thread};
-use std::io::BufRead;
 use std::time::Duration;
 use chrono::DateTime;
 
 use ethers::core::k256::ecdsa::SigningKey;
 use ethers::prelude::*;
 use json::JsonValue;
-use crate::edcas_contract::{BodyProperties, PlanetProperties, StarProperties};
+use crate::edcas_contract::{BodyProperties, Faction, PlanetProperties, StarProperties};
 use crate::eddn_adapter::EddnAdapter;
 use crate::SendError::{NonRepeatableError, RepeatableError};
 
@@ -16,7 +15,10 @@ mod eddn_adapter;
 mod edcas_contract;
 
 //abigen!(EDCAS_Contract, "./contracts/EDCAS.abi");
-
+type ContractCall = FunctionCall<
+    Arc<SignerMiddleware<Provider<Http>, Wallet<SigningKey>>>,
+    SignerMiddleware<Provider<Http>, Wallet<SigningKey>>,
+    ()>;
 #[tokio::main]
 async fn main() {
     //Abigen::new("EDCAS", "./contracts/EDCAS.abi").unwrap().generate().unwrap().write_to_file("./src/edcas_contract.rs").unwrap();
@@ -230,6 +232,97 @@ fn interpret_event(json: JsonValue) {
         "DockingRequested" => {}
         "DockingGranted" => {}
         "Docked" => {
+            //{ "timestamp":"2024-04-02T21:22:42Z", "event":"Docked", "StationName":"Q2K-BHB", "StationType":"FleetCarrier", "Taxi":false, "Multicrew":false, 
+            // "StarSystem":"Dulos", "SystemAddress":13865362204089, "MarketID":3704402432, 
+            // "StationFaction":{ "Name":"FleetCarrier" }, "StationGovernment":"$government_Carrier;", "StationGovernment_Localised":"Private Ownership", 
+            // "StationServices":[ "dock", "autodock", "commodities", "contacts", "exploration", "outfitting", "crewlounge", "rearm", "refuel", "repair", "shipyard", "engineer", "flightcontroller", "stationoperations", "stationMenu", "carriermanagement", "carrierfuel", "livery", "voucherredemption", "socialspace", "bartender", "vistagenomics" ], 
+            // "StationEconomy":"$economy_Carrier;", "StationEconomy_Localised":"Private Enterprise", 
+            // "StationEconomies":[ { "Name":"$economy_Carrier;", "Name_Localised":"Private Enterprise", "Proportion":1.000000 } ], 
+            // "DistFromStarLS":0.000000, "LandingPads":{ "Small":4, "Medium":4, "Large":8 } }
+
+            //{ "timestamp":"2024-04-02T19:42:24Z", "event":"Docked", "StationName":"Milnor Station", "StationType":"Ocellus", "Taxi":false, "Multicrew":false, 
+            // "StarSystem":"Dulos", "SystemAddress":13865362204089, "MarketID":3223819264, 
+            // "StationFaction":{ "Name":"The Sovereign Justice Collective", "FactionState":"Bust" }, 
+            // "StationGovernment":"$government_Dictatorship;", "StationGovernment_Localised":"Dictatorship", 
+            // "StationServices":[ "dock", "autodock", "commodities", "contacts", "exploration", "missions", "outfitting", "crewlounge", "rearm", "refuel", "repair", "shipyard", "tuning", "engineer", "missionsgenerated", "flightcontroller", "stationoperations", "powerplay", "searchrescue", "stationMenu", "shop", "livery", "socialspace", "bartender", "vistagenomics", "pioneersupplies", "apexinterstellar", "frontlinesolutions" ], 
+            // "StationEconomy":"$economy_Refinery;", "StationEconomy_Localised":"Refinery", 
+            // "StationEconomies":[ { "Name":"$economy_Refinery;", "Name_Localised":"Refinery", "Proportion":1.000000 } ], 
+            // "DistFromStarLS":20.275191, "LandingPads":{ "Small":11, "Medium":13, "Large":6 } }
+            thread::spawn(|| {
+                tokio::runtime::Builder::new_multi_thread()
+                    .enable_all()
+                    .build()
+                    .unwrap()
+                    .block_on(async move {
+                        let mut services = String::new();
+                        for entry in 0..json["StationServices"].len() {
+                            if !services.is_empty(){
+                                services.push_str(",");
+                            }
+                            services.push_str(json["StationServices"][entry].as_str().unwrap());
+                        }
+                        let contract = get_contract().await;
+                        if json["StationType"].as_str().unwrap() == "FleetCarrier"{
+                            
+                            let function_call: ContractCall
+                            = contract.register_carrier(
+                                json["MarketID"].as_u64().unwrap(),
+                                "Fleet Carrier".to_string(),
+                                json["StationName"].as_str().unwrap().to_string(),
+                                services,
+                                "".to_string(),
+                                false,
+                                DateTime::parse_from_rfc3339(
+                                    json["timestamp"].as_str().unwrap(),
+                                )
+                                    .unwrap()
+                                    .timestamp()
+                                    .into()
+                            );
+                            //execute_send(function_call).await;
+                            execute_send_repeatable(function_call).await;
+
+                            let function_call: ContractCall
+                                = contract.report_carrier_location(
+                                json["MarketID"].as_u64().unwrap(),
+                                json["StarSystem"].as_str().unwrap().to_string(),
+                                "Unkown".to_string(),
+                                DateTime::parse_from_rfc3339(
+                                    json["timestamp"].as_str().unwrap(),
+                                )
+                                    .unwrap()
+                                    .timestamp()
+                                    .into()
+                            );
+                            //execute_send(function_call).await;
+                            execute_send_repeatable(function_call).await;
+                        }else {
+                            let function_call: ContractCall = contract.register_station(
+                                json["MarketID"].as_u64().unwrap(),
+                                json["StationName"].as_str().unwrap().to_string(),
+                                json["StationType"].as_str().unwrap().to_string(),
+                                json["SystemAddress"].as_u64().unwrap(),
+                                json["StarSystem"].as_str().unwrap().to_string(),
+                                Faction{
+                                    name: json["StationFaction"]["Name"].as_str().unwrap().to_string(),
+                                    state: json["StationFaction"]["FactionState"].as_str().unwrap_or("").to_string(),
+                                },
+                                json["StationGovernment"].as_str().unwrap().to_string(),
+                                json["StationEconomy"].as_str().unwrap().to_string(),
+                                services, 
+                                edcas_contract::Floating{
+                                    decimal: json["DistFromStarLS"].to_string().replace('.',"").parse().unwrap(),
+                                    floating_point: json["DistFromStarLS"].to_string().split('.').nth(1).unwrap_or("").len() as u8,
+                                },
+                                json["LandingPads"].to_string(),
+                                DateTime::parse_from_rfc3339(json["timestamp"].as_str().unwrap()).unwrap().timestamp().into()
+                            );
+                            //execute_send(function_call).await;
+                            execute_send_repeatable(function_call).await;
+                        }
+                        
+                    });
+            });
         }
         "Undocked" => {
             //{ "timestamp":"2023-09-09T18:29:17Z", "event":"Undocked", "StationName":"Q2K-BHB", "StationType":"FleetCarrier", "MarketID":3704402432, "Taxi":false, "Multicrew":false }
@@ -415,16 +508,6 @@ fn interpret_event(json: JsonValue) {
                     .build()
                     .unwrap()
                     .block_on(async move {
-                        let mut services = String::new();
-                        for entry in 0..json["Crew"].len() {
-                            if json["Crew"][entry]["Activated"].as_bool().unwrap_or(false) {
-                                if !services.is_empty(){
-                                    services.push_str(",");
-                                }
-                                services.push_str(json["Crew"][entry]["CrewRole"].to_string().as_str());
-                            }
-                        }
-
                         let contract = get_contract().await;
                         let function_call: FunctionCall<
                             Arc<SignerMiddleware<Provider<Http>, Wallet<SigningKey>>>,
@@ -432,7 +515,7 @@ fn interpret_event(json: JsonValue) {
                             (),
                         > = contract.register_carrier(
                             json["CarrierID"].as_u64().unwrap(),
-                            "Carrier".to_string(),
+                            "Fleet Carrier".to_string(),
                             json["Callsign"].as_str().unwrap().to_string(),
                             "".to_string(),
                             "".to_string(),
@@ -476,7 +559,7 @@ fn interpret_event(json: JsonValue) {
                         for entry in 0..json["Crew"].len() {
                             if json["Crew"][entry]["Activated"].as_bool().unwrap_or(false) {
                                 if !services.is_empty(){
-                                    services.push_str(",");
+                                    services.push(',');
                                 }
                                 services.push_str(json["Crew"][entry]["CrewRole"].to_string().as_str());
                             }
@@ -586,7 +669,10 @@ fn interpret_event(json: JsonValue) {
         "SetUserShipName" => {}
         "FCMaterials" => {}
         "CommunityGoalJoin" => {}
-        "SupercruiseDestinationDrop" => {}
+        "SupercruiseDestinationDrop" => {
+            //TODO May update carrier name
+            //{ "timestamp":"2024-04-02T21:21:39Z", "event":"SupercruiseDestinationDrop", "Type":"FUXBAU Q2K-BHB", "Threat":0, "MarketID":3704402432 }
+        }
         "JetConeBoost" => {}
         "AsteroidCracked" => {}
         "EscapeInterdiction" => {}
