@@ -88,6 +88,25 @@
         {
           "indexed": false,
           "internalType": "uint64",
+          "name": "marketID",
+          "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "commodity",
+          "type": "string"
+        }
+      ],
+      "name": "CommodityListeningUpdate",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
           "name": "systemAddress",
           "type": "uint64"
         }
@@ -133,6 +152,60 @@
       ],
       "name": "SystemRegistration",
       "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "marketID",
+          "type": "uint64"
+        },
+        {
+          "internalType": "string",
+          "name": "commodity",
+          "type": "string"
+        }
+      ],
+      "name": "CommodityListeningMap",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "buy_price",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint32",
+          "name": "sell_price",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint32",
+          "name": "mean_price",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint32",
+          "name": "demand",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint32",
+          "name": "demand_bracket",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint32",
+          "name": "stock",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint32",
+          "name": "stock_bracket",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "inputs": [
@@ -243,6 +316,44 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "commodities",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "commodity",
+          "type": "string"
+        }
+      ],
+      "name": "commodityMap",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "id",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint64",
           "name": "carrierID",
           "type": "uint64"
@@ -276,6 +387,19 @@
           "internalType": "uint64[]",
           "name": "",
           "type": "uint64[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "get_commodities",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "",
+          "type": "string[]"
         }
       ],
       "stateMutability": "view",
@@ -708,6 +832,66 @@
         }
       ],
       "name": "registerCarrier",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "marketID",
+          "type": "uint64"
+        },
+        {
+          "internalType": "string",
+          "name": "commodity",
+          "type": "string"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "buy_price",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "sell_price",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "mean_price",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "demand",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "demand_bracket",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "stock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "stock_bracket",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct CommodityListening",
+          "name": "listening",
+          "type": "tuple"
+        }
+      ],
+      "name": "register_commodity_listening",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
