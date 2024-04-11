@@ -1434,6 +1434,34 @@ pub mod edcas {
                     ],
                 ),
                 (
+                    ::std::borrow::ToOwned::to_owned("stationIdMap"),
+                    ::std::vec![
+                        ::ethers::core::abi::ethabi::Function {
+                            name: ::std::borrow::ToOwned::to_owned("stationIdMap"),
+                            inputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::borrow::ToOwned::to_owned("stationID"),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::Uint(64usize),
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("uint64"),
+                                    ),
+                                },
+                            ],
+                            outputs: ::std::vec![
+                                ::ethers::core::abi::ethabi::Param {
+                                    name: ::std::string::String::new(),
+                                    kind: ::ethers::core::abi::ethabi::ParamType::String,
+                                    internal_type: ::core::option::Option::Some(
+                                        ::std::borrow::ToOwned::to_owned("string"),
+                                    ),
+                                },
+                            ],
+                            constant: ::core::option::Option::None,
+                            state_mutability: ::ethers::core::abi::ethabi::StateMutability::View,
+                        },
+                    ],
+                ),
+                (
                     ::std::borrow::ToOwned::to_owned("stationMap"),
                     ::std::vec![
                         ::ethers::core::abi::ethabi::Function {
@@ -2289,6 +2317,15 @@ pub mod edcas {
         > {
             self.0
                 .method_hash([152, 203, 87, 0], (address, p1))
+                .expect("method not found (this should never happen)")
+        }
+        ///Calls the contract's `stationIdMap` (0x1b68db0e) function
+        pub fn station_id_map(
+            &self,
+            station_id: u64,
+        ) -> ::ethers::contract::builders::ContractCall<M, ::std::string::String> {
+            self.0
+                .method_hash([27, 104, 219, 14], station_id)
                 .expect("method not found (this should never happen)")
         }
         ///Calls the contract's `stationMap` (0xad62c24d) function
@@ -3159,6 +3196,21 @@ pub mod edcas {
         pub address: u64,
         pub p1: ::ethers::core::types::U256,
     }
+    ///Container type for all input parameters for the `stationIdMap` function with signature `stationIdMap(uint64)` and selector `0x1b68db0e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthCall,
+        ::ethers::contract::EthDisplay,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    #[ethcall(name = "stationIdMap", abi = "stationIdMap(uint64)")]
+    pub struct StationIdMapCall {
+        pub station_id: u64,
+    }
     ///Container type for all input parameters for the `stationMap` function with signature `stationMap(uint64)` and selector `0xad62c24d`
     #[derive(
         Clone,
@@ -3256,6 +3308,7 @@ pub mod edcas {
         RegisterSystem(RegisterSystemCall),
         ReportCarrierLocation(ReportCarrierLocationCall),
         StarMap(StarMapCall),
+        StationIdMap(StationIdMapCall),
         StationMap(StationMapCall),
         StationNameMap(StationNameMapCall),
         SystemIdMap(SystemIdMapCall),
@@ -3372,6 +3425,11 @@ pub mod edcas {
             ) {
                 return Ok(Self::StarMap(decoded));
             }
+            if let Ok(decoded) = <StationIdMapCall as ::ethers::core::abi::AbiDecode>::decode(
+                data,
+            ) {
+                return Ok(Self::StationIdMap(decoded));
+            }
             if let Ok(decoded) = <StationMapCall as ::ethers::core::abi::AbiDecode>::decode(
                 data,
             ) {
@@ -3464,6 +3522,9 @@ pub mod edcas {
                     ::ethers::core::abi::AbiEncode::encode(element)
                 }
                 Self::StarMap(element) => ::ethers::core::abi::AbiEncode::encode(element),
+                Self::StationIdMap(element) => {
+                    ::ethers::core::abi::AbiEncode::encode(element)
+                }
                 Self::StationMap(element) => {
                     ::ethers::core::abi::AbiEncode::encode(element)
                 }
@@ -3510,6 +3571,7 @@ pub mod edcas {
                     ::core::fmt::Display::fmt(element, f)
                 }
                 Self::StarMap(element) => ::core::fmt::Display::fmt(element, f),
+                Self::StationIdMap(element) => ::core::fmt::Display::fmt(element, f),
                 Self::StationMap(element) => ::core::fmt::Display::fmt(element, f),
                 Self::StationNameMap(element) => ::core::fmt::Display::fmt(element, f),
                 Self::SystemIdMap(element) => ::core::fmt::Display::fmt(element, f),
@@ -3621,6 +3683,11 @@ pub mod edcas {
     impl ::core::convert::From<StarMapCall> for EDCASCalls {
         fn from(value: StarMapCall) -> Self {
             Self::StarMap(value)
+        }
+    }
+    impl ::core::convert::From<StationIdMapCall> for EDCASCalls {
+        fn from(value: StationIdMapCall) -> Self {
+            Self::StationIdMap(value)
         }
     }
     impl ::core::convert::From<StationMapCall> for EDCASCalls {
@@ -3822,6 +3889,18 @@ pub mod edcas {
         pub star_properties: StarProperties,
         pub body_properties: BodyProperties,
     }
+    ///Container type for all return fields from the `stationIdMap` function with signature `stationIdMap(uint64)` and selector `0x1b68db0e`
+    #[derive(
+        Clone,
+        ::ethers::contract::EthAbiType,
+        ::ethers::contract::EthAbiCodec,
+        Default,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash
+    )]
+    pub struct StationIdMapReturn(pub ::std::string::String);
     ///Container type for all return fields from the `stationMap` function with signature `stationMap(uint64)` and selector `0xad62c24d`
     #[derive(
         Clone,
