@@ -759,6 +759,7 @@ fn process_jump(json: JsonValue) {
                 > = contract.register_system(
                     json["SystemAddress"].as_u64().unwrap(),
                     json["StarSystem"].to_string(),
+                    json["SystemGovernment"].to_string(),
                     json["SystemAllegiance"].to_string(),
                     json["SystemEconomy"].to_string(),
                     json["SystemSecondEconomy"].to_string(),
@@ -778,12 +779,22 @@ fn process_jump(json: JsonValue) {
 }
 
 fn extract_planet_properties(json: &JsonValue) -> PlanetProperties {
+    let mut parent_id = 0;
+    for i in 0..json["Parents"].len() {
+        let parent = &json["Parents"][i];
+        for entry in parent.entries() {
+            if entry.1.as_u8().unwrap() > parent_id {
+                parent_id = entry.1.as_u8().unwrap();
+            }
+        }
+    }
     PlanetProperties {
         atmosphere: json["Atmosphere"].to_string(),
         class: json["PlanetClass"].to_string(),
         landable: json["Landable"].as_bool().unwrap_or(false),
         terraform_state: json["TerraformState"].to_string(),
         volcanism: json["Volcanism"].to_string(),
+        parent_id,
         tidal_lock: json["TidalLock"].as_bool().unwrap_or_else(|| panic!("Tidal Lock not parseable")),
         mass_em: edcas_contract::Floating{
             decimal: json["MassEM"].to_string().replace('.',"").parse().unwrap(),

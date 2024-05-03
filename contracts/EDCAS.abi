@@ -410,9 +410,26 @@
       "name": "get_stations",
       "outputs": [
         {
-          "internalType": "uint64[]",
+          "components": [
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "uint64",
+              "name": "market_id",
+              "type": "uint64"
+            },
+            {
+              "internalType": "string",
+              "name": "_type",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct StationIdentity[]",
           "name": "",
-          "type": "uint64[]"
+          "type": "tuple[]"
         }
       ],
       "stateMutability": "view",
@@ -426,25 +443,6 @@
           "internalType": "string[]",
           "name": "",
           "type": "string[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "markedIDs",
-      "outputs": [
-        {
-          "internalType": "uint64",
-          "name": "",
-          "type": "uint64"
         }
       ],
       "stateMutability": "view",
@@ -521,6 +519,11 @@
               "internalType": "bool",
               "name": "tidal_lock",
               "type": "bool"
+            },
+            {
+              "internalType": "uint8",
+              "name": "parent_id",
+              "type": "uint8"
             },
             {
               "components": [
@@ -954,6 +957,11 @@
               "internalType": "bool",
               "name": "tidal_lock",
               "type": "bool"
+            },
+            {
+              "internalType": "uint8",
+              "name": "parent_id",
+              "type": "uint8"
             },
             {
               "components": [
@@ -1530,6 +1538,11 @@
         },
         {
           "internalType": "string",
+          "name": "government",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
           "name": "allegiance",
           "type": "string"
         },
@@ -1792,16 +1805,26 @@
     {
       "inputs": [
         {
-          "internalType": "uint64",
-          "name": "stationID",
-          "type": "uint64"
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
-      "name": "stationIdMap",
+      "name": "stationIds",
       "outputs": [
         {
           "internalType": "string",
-          "name": "",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "uint64",
+          "name": "market_id",
+          "type": "uint64"
+        },
+        {
+          "internalType": "string",
+          "name": "_type",
           "type": "string"
         }
       ],
@@ -1827,16 +1850,6 @@
           "internalType": "uint256",
           "name": "timestamp",
           "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_type",
-          "type": "string"
         },
         {
           "internalType": "uint64",
@@ -1910,25 +1923,6 @@
       "inputs": [
         {
           "internalType": "string",
-          "name": "stationName",
-          "type": "string"
-        }
-      ],
-      "name": "stationNameMap",
-      "outputs": [
-        {
-          "internalType": "uint64",
-          "name": "",
-          "type": "uint64"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
           "name": "systemName",
           "type": "string"
         }
@@ -1967,6 +1961,11 @@
         {
           "internalType": "string",
           "name": "allegiance",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "government",
           "type": "string"
         },
         {
